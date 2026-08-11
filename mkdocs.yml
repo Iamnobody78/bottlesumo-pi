@@ -1,0 +1,35 @@
+site_name: BottleSumo 旗舰版
+site_description: 140GB 物理仿真 + AI 治理旗舰仓库 — Governance Center Dashboard
+repo_url: https://github.com/Iamnobody78/bottlesumo-pi
+site_url: https://iamnobody78.github.io/bottlesumo-pi/
+
+theme:
+  name: material
+  language: zh
+  palette:
+    scheme: slate
+    primary: indigo
+  features:
+    - navigation.sections
+    - navigation.top
+    - toc.integrate
+
+nav:
+  - 首页: index.md
+  - 架构: architecture.md
+  - 治理: governance.md
+  - 开发: contributing.md
+  - 变更: changelog.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - tables
+
+extra:
+  generator: false
