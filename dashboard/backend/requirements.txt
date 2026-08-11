@@ -5,3 +5,5 @@ pydantic>=2.0
 pyyaml>=6.0
 httpx>=0.27
 pytest>=8.0
+# 生产级数据库（GAP-2.1）: PostgreSQL 驱动，GOV_DASH_DB_URL 一键切换；SQLite 默认零配置
+psycopg[binary]>=3.1
