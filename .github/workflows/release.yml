@@ -31,7 +31,7 @@ jobs:
           npm run build
           tar -czf ../../dist/dashboard-frontend-${{ steps.version.outputs.tag }}.tar.gz -C dist .
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: BottleSumo ${{ steps.version.outputs.tag }}
           body: |
