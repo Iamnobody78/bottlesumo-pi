@@ -5,12 +5,38 @@ __pycache__/
 .venv/
 venv/
 
-# Logs (regenerable; models stay tracked for reproducibility)
+# Logs (regenerable)
 *.log
 
 # OS
 .DS_Store
 Thumbs.db
 
-# WSL
+# WSL (simulation assets live in WSL side, not git)
 *.wsl
+
+# Temporary scripts / scratch (not product assets)
+_tmp/
+
+# Test cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+dist/
+
+# Meta-Harness 演化实验产物 (working artifacts, not product assets)
+governance/meta_harness/variants/
+governance/meta_harness/candidates/
+governance/meta_harness/_cache/
+governance/meta_harness/_tmp/
+governance/meta_harness/experience/
+
+# 仿真资产 (140GB 级, WSL 侧/本地, 不入 git)
+models/mujoco_aggressive_trajectories/
+models/*.pt
+models/*.best
+models/cad/
+models/_t1b_smoke.pt
