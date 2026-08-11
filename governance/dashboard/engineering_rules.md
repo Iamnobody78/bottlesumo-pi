@@ -88,6 +88,11 @@
 | RULE-DASH-001 | **治理引擎必须可审计**：`ProtocolGateway` 暴露 audit_sink 回调（evaluate_verified 每次裁决后触发），fail-open 设计（审计存储故障不影响裁决）；dashboard 引擎门面将事件写入 audit_events 表 | S68 (审计回调) |
 | RULE-DASH-002 | **Dashboard 必须同进程复用引擎，不复制逻辑**：GovernanceEngine 门面直接 import agent-governance-v2（ProtocolGateway/BaselineDeclarationValidator），所有裁决/验证/扫描逻辑单点维护；前端仅消费 API | S68 (引擎门面) |
 | RULE-DASH-003 | **治理 API 必须诚实暴露能力边界**：/evaluate 返回验证结果全字段（verified/confidence/reason/validator），谎报降级（ESCALATE）在 UI 高亮"声明未通过验证"；无隐藏的"过"与"不过" | S68 (治理中心 API) |
+| RULE-DASH-004 | **自身仓库必须在产品根目录内 `git init` 独立初始化**：bottlesumo_pi 长期"不是独立 git 仓库"——真实根是会话目录，`push -u origin main` 把 .aionui/msan_data/harness 等 226 个内部文件推上 GitHub；产品化时仓库边界与产品根必须一致，若不一致需子树提取重建独立 repo 并 force-push 替换 | S69 (仓库修复) |
+| RULE-DASH-005 | **git add 精确到交付文件，禁止 `git add -A`**（S14 已立 RULE-PR-004，S69 再次违反）：`git add -A` 会把 vision/tools/reports/notion probes 等非交付物 staged——每次误加需 reset 回滚并精确 add；规则由 PR 域升级为仓库治理级，双域共同约束 | S69 (仓库修复) |
+| RULE-DASH-006 | **跨仓库子树提取用 `git read-tree FETCH_HEAD:<subdir>` 构建 index**：手工 hash-object 重建 blob 对中文路径/kb 二进制易出现 SHA1 不匹配；read-tree 不依赖工作树、自动保留路径与内容，是 subtree 提取的可靠通道 | S69 (仓库修复) |
+| RULE-DASH-007 | **`.gitignore` 只影响 untracked 文件**：已 staged 的违规文件须 `git rm -r --cached`（重复执行直到 status 干净）——仅改 .gitignore 无法移除已入索引的路径 | S69 (仓库修复) |
+| RULE-DASH-008 | **API 路由/契约以实测为准，不以文档/直觉为准**：真实前缀是 `/api/governance/policies/*` 而非 `/api/policies/*`，health 是 `/api/health`，validate 对语义错误返回 200+valid:false，deploy 失败返回 422——E2E 脚本、ARCHITECTURE.md、CONTRIBUTING.md 三处曾因凭直觉匹配错误路由而返工 | S69 (E2E 实测) |
 
 ## 高置信度规则 (HC) —— D5 蒸馏入库 (Sprint 34)
 
@@ -102,4 +107,4 @@
 
 ---
 
-*维护：治理智能体 | 更新：2026-08-08 (Sprint 34 D5 蒸馏入库)*
+*维护：治理智能体 | 更新：2026-08-10 (Sprint 69 仓库修复规则 + D5 蒸馏入库)*
