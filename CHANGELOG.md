@@ -4,6 +4,28 @@
 
 ## [Unreleased]
 
+## [v2.1.0] — 2026-08-10 · ARCH-ROUND 1（生产基线：数据库 + 可观测性 + 容器化）
+
+### Added
+- **生产级数据库支持**（GAP-2.1）：`GOV_DASH_DB_URL` 标准 SQLAlchemy URL 一键切换 PostgreSQL；SQLite 保持默认零配置；`resolve_db_url` 纯函数 + 5 单测；CI 新增 PostgreSQL 16 矩阵 job
+- **可观测性**（GAP-1.1）：`GET /metrics` Prometheus 端点（统一 `governance_*` 命名空间，DUAL-ECO 双项目一致）；JSON 结构化日志（`GOV_LOG_FORMAT=json`，零额外依赖）；4 单测
+- **容器化部署**（GAP-5.1）：多阶段 Dockerfile（构建时锁定拉取 agent-governance-v2 ref）；docker-compose（backend/frontend/postgres + `observability` profile 含 Prometheus/Grafana）；nginx SPA 托管 + /api 反代；HEALTHCHECK
+- **生产化路线图**（GAP-6.1）：`docs/architecture/ROADMAP_PRODUCTION.md`（v2.x 稳固核心 / v3.0 能力增强 / v4.0+ 生态构建，含 DoD 门）
+- 文档：`docs/architecture/database.md` / `observability.md` / `deployment.md`；根级 `.env.example`；`.dockerignore`
+
+### Changed
+- Dashboard backend requirements：+ `psycopg[binary]`、+ `prometheus-client`
+- CI gate 扩展：`dashboard-backend-pg`（PostgreSQL 16 service）纳入 gate 依赖
+- CHANGELOG 结构：v2.0.0 细化为四视图 MVP 行（S69 变更回填）
+
+### Fixed
+- `build_engine` 向后兼容：第一位置参数保持 `db_path`（governance_engine.py 依赖）；`resolve_db_url` 实时读环境变量（支持测试 monkeypatch）
+- E2E 部署残留协议污染真实 config（`e2e_demo.yaml`）导致 seed 规则 12≠9：本版清理，E2E 自清理列入 P1（GAP-4.2 周边）
+
+### 跨项目影响（DUAL-ECO）
+- 引擎（agent-governance-v2）零代码变更；指标命名空间 `governance_*` 已在引擎侧约定，双项目可共用一个 Grafana 面板
+- 容器构建需访问 GitHub 拉取引擎（Iamnobody78/agent-governance-v2，`GOV_ENGINE_REF` 锁定）
+
 ## [v2.0.0] — 2026-08-10 · Sprint 69（产品化 + 开源治理资产 + CI/CD）
 
 ### Added

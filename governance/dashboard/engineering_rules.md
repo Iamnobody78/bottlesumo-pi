@@ -93,6 +93,10 @@
 | RULE-DASH-006 | **跨仓库子树提取用 `git read-tree FETCH_HEAD:<subdir>` 构建 index**：手工 hash-object 重建 blob 对中文路径/kb 二进制易出现 SHA1 不匹配；read-tree 不依赖工作树、自动保留路径与内容，是 subtree 提取的可靠通道 | S69 (仓库修复) |
 | RULE-DASH-007 | **`.gitignore` 只影响 untracked 文件**：已 staged 的违规文件须 `git rm -r --cached`（重复执行直到 status 干净）——仅改 .gitignore 无法移除已入索引的路径 | S69 (仓库修复) |
 | RULE-DASH-008 | **API 路由/契约以实测为准，不以文档/直觉为准**：真实前缀是 `/api/governance/policies/*` 而非 `/api/policies/*`，health 是 `/api/health`，validate 对语义错误返回 200+valid:false，deploy 失败返回 422——E2E 脚本、ARCHITECTURE.md、CONTRIBUTING.md 三处曾因凭直觉匹配错误路由而返工 | S69 (E2E 实测) |
+| RULE-ARCH-001 | **生产级变更必须"三同步"且 GATE 含新功能硬验证**：代码 + 测试 + 文档同步提交；除回归测试外，GATE 必须实测新功能（如 /metrics 返回 200+指标存在、容器 HEALTHCHECK healthy、compose config VALID）——静态校验不能替代运行验证 | ARCH-ROUND 1 |
+| RULE-ARCH-002 | **数据库/依赖切换必须向后兼容既有调用点**：`build_engine(db_path)` 第一位置参数语义被 governance_engine.py 依赖，改造时误将 db_path 移到第二位置即破坏引擎集成——改签名前先 grep 全部调用点；环境变量读取需实时（模块级常量不响应测试 monkeypatch） | ARCH-ROUND 1 |
+| RULE-ARCH-003 | **可观测性指标统一 `governance_*` 命名空间**（双项目一致，可共用 Grafana 面板）；/metrics 自身不计入请求计数（避免递归膨胀）；SQLAlchemy create_engine 对 PG 方言 eager 加载 dbapi——单测验证 URL 用 `make_url` 纯解析，连通性交给 CI service | ARCH-ROUND 1 |
+| RULE-ARCH-004 | **E2E 写真实配置必须自清理**：E2E deploy 残留 `e2e_demo.yaml` 到真实协议目录（S69 手动清理一次、ARCH-ROUND 1 又残留一次），污染 seed 规则数导致 12≠9——E2E 脚本必须 try/finally 清理自己部署的文件，禁止依赖人工 | ARCH-ROUND 1 (待修, P1) |
 
 ## 高置信度规则 (HC) —— D5 蒸馏入库 (Sprint 34)
 
@@ -107,4 +111,4 @@
 
 ---
 
-*维护：治理智能体 | 更新：2026-08-10 (Sprint 69 仓库修复规则 + D5 蒸馏入库)*
+*维护：治理智能体 | 更新：2026-08-10 (Sprint 69 仓库修复规则 + D5 蒸馏入库 + ARCH-ROUND 1 生产基线规则)*
