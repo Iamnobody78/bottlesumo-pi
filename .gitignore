@@ -41,6 +41,11 @@ models/*.best
 models/cad/
 models/_t1b_smoke.pt
 
+# 固件构建产物 (源码入库, .elf/.o 不入)
+firmware/**/*.elf
+firmware/*.elf
+firmware/stm32_mcu/build/
+
 # 本地开发基础设施 (调试脚本/日志/DB, 非产品资产)
 governance/meta_harness/a1_*.ps1
 governance/meta_harness/a1_*.py
