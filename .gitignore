@@ -43,12 +43,26 @@ models/_t1b_smoke.pt
 
 # 本地开发基础设施 (调试脚本/日志/DB, 非产品资产)
 governance/meta_harness/a1_*.ps1
+governance/meta_harness/a1_*.py
 governance/meta_harness/a2_*.ps1
+governance/meta_harness/a2_*.sh
 governance/meta_harness/a3_*.ps1
 governance/meta_harness/ollama_*.ps1
+governance/meta_harness/check_ollama.sh
+governance/meta_harness/llava_check.ps1
+governance/meta_harness/misc_*.ps1
+governance/meta_harness/p0_*.ps1
+governance/meta_harness/p1_*.ps1
+governance/meta_harness/gamerec_*.ps1
+governance/meta_harness/empty_*.ps1
+governance/meta_harness/start_*.ps1
+governance/meta_harness/stage_round*.sh
 governance/meta_harness/*.log.err
 governance/meta_harness/*.log
 governance/meta_harness/*.db
+governance/meta_harness/s1*.json
+governance/meta_harness/s16_*.err
+governance/meta_harness/s17_*.json
 governance/dashboard/backend/*.db
 governance/dashboard/backend/*.db-journal
 governance/meta_harness/diag_*.py
