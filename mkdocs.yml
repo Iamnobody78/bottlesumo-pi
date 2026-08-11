@@ -17,6 +17,7 @@ theme:
 nav:
   - 首页: index.md
   - 架构: architecture.md
+  - 生产化路线图: architecture/ROADMAP_PRODUCTION.md
   - 治理: governance.md
   - 开发: contributing.md
   - 变更: changelog.md
