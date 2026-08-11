@@ -46,6 +46,13 @@ firmware/**/*.elf
 firmware/*.elf
 firmware/stm32_mcu/build/
 
+# 本地产物 (会话记录/仿真截图/日志/归档)
+.aionui/sessions/
+MUJOCO_LOG.TXT
+_archive/
+dashboard/db/
+docs/vision_frames/
+
 # 本地开发基础设施 (调试脚本/日志/DB, 非产品资产)
 governance/meta_harness/a1_*.ps1
 governance/meta_harness/a1_*.py
