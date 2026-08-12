@@ -9,3 +9,6 @@ pytest>=8.0
 psycopg[binary]>=3.1
 # 可观测性（GAP-1.1）: Prometheus /metrics 端点（governance_* 命名空间）
 prometheus-client>=0.20
+# RBAC（ARCH-ROUND 2 / GAP-3.1）: JWT 认证 + 密码哈希
+pyjwt>=2.8
+bcrypt>=4.0

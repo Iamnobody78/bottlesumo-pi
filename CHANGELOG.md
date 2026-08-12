@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+### Added (2026-08-10 ARCH-ROUND 2 / GAP-3.1: RBAC+JWT 访问控制)
+- **认证**: `POST /api/auth/login`（JWT HS256, `GOV_AUTH_SECRET` 可配, TTL 12h）、`GET /api/auth/me`、用户管理（仅 admin）
+- **授权**: `require_role` 依赖门控——人类端点全部要求 JWT（401）；策略部署仅 admin（403）；VCE 扫描 auditor+；引擎集成端点（evaluate/audit_ingest）保持开放（v3.0 补 API-Key）
+- **数据**: `users` 表（bcrypt 原生 API——passlib 与 bcrypt≥4.1 不兼容已弃用）；首次启动种子 admin/admin123
+- **前端**: LoginView + 路由守卫（无 token 重定向登录）+ 角色徽章 + 退出登录
+- **文档**: `docs/architecture/authz.md`（角色矩阵 + 与 engine 租户打通设计 DUAL-ECO P1）
+- **测试**: `tests/test_auth.py` 9 例（401/403 矩阵）→ 全量 46/46 + E2E 9/9
+
+### Fixed
+- passlib 1.7.4 与 bcrypt 5.0.0 不兼容（`__about__` 移除导致 72-byte 哈希错误）→ 直接使用 bcrypt 原生 API
+- E2E 适配 RBAC（登录拿 token 注入）
+
 ### Added (2026-08-10 GitHub 生态配置, DUAL-ECO GAP-6.10)
 - GitHub 双仓库生态配置（零 UI 纯 API）: Issues + Discussions 启用（GraphQL）、main 分支保护（1 review + enforce_admins + strict + 禁 force-push）
 - `.github/CODEOWNERS`（双仓库, 走 PR 流程, 见 PR #15 / agent-governance-v2 #11）

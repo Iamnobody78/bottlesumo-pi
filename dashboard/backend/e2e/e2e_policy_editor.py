@@ -22,6 +22,7 @@ import urllib.error
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 BASE = "http://127.0.0.1:8010/api/governance"
+AUTH_BASE = "http://127.0.0.1:8010/api/auth"
 VALID_PROTOCOL = """schema_version: 11-col-v1
 protocol:
   module: e2e_demo
@@ -46,11 +47,24 @@ protocol:
 passed = failed = 0
 
 
+def login() -> str:
+    """RBAC (ARCH-ROUND 2): 登录 admin 拿 JWT。"""
+    body = json.dumps({"username": "admin", "password": "admin123"}).encode()
+    req = urllib.request.Request(AUTH_BASE + "/login", data=body, method="POST",
+                                 headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        data = json.loads(resp.read().decode())
+    return data["token"]
+
+
+TOKEN = login()
+AUTH_HEADERS = {"Content-Type": "application/json", "Authorization": f"Bearer {TOKEN}"}
+
+
 def call(method: str, path: str, body=None) -> tuple[int, dict]:
     url = BASE + path
     data = json.dumps(body).encode() if body is not None else None
-    req = urllib.request.Request(url, data=data, method=method,
-                                 headers={"Content-Type": "application/json"})
+    req = urllib.request.Request(url, data=data, method=method, headers=AUTH_HEADERS)
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
             return resp.status, json.loads(resp.read().decode())
@@ -72,6 +86,21 @@ def main() -> None:
     print("策略编辑器 E2E (真实 HTTP :8010)")
     print("=" * 64)
 
+    # RULE-ARCH-004: E2E 部署会落盘 config/protocols/e2e_demo.yaml，
+    # 必须在 finally 中自清理，避免污染真实协议目录 (seed 计数 12≠9)。
+    e2e_protocol_file = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..", "..", "..", "..",
+        "agent-governance-v2", "config", "protocols", "e2e_demo.yaml")
+    try:
+        _run_checks()
+    finally:
+        if os.path.exists(e2e_protocol_file):
+            os.remove(e2e_protocol_file)
+            print(f"  [CLEANUP] 移除残留 {os.path.basename(e2e_protocol_file)}")
+
+
+def _run_checks() -> None:
     # 0. 健康检查 (实际路由 /api/health)
     try:
         with urllib.request.urlopen(BASE.replace("/governance", "/health"), timeout=5) as resp:
