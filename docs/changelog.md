@@ -1,6 +1,6 @@
 # 变更
 
-见仓库根 [CHANGELOG.md](../CHANGELOG.md)。
+见仓库根 [CHANGELOG.md](https://github.com/Iamnobody78/bottlesumo-pi/blob/main/CHANGELOG.md)。
 
 | 版本 | 阶段 | 日期 |
 |---|---|---|

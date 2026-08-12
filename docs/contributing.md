@@ -1,6 +1,6 @@
 # 开发
 
-见仓库根 [CONTRIBUTING.md](../CONTRIBUTING.md)。
+见仓库根 [CONTRIBUTING.md](https://github.com/Iamnobody78/bottlesumo-pi/blob/main/CONTRIBUTING.md)。
 
 ## 8-GATE 速查
 
