@@ -19,7 +19,7 @@ setup_logging()
 
 app = FastAPI(
     title="Governance Center Dashboard",
-    version="0.2.0 (S69 策略编辑器 + ARCH T0.3 可观测性 + ARCH-ROUND 2 RBAC)",
+    version="1.0.0 (S69 + S2 刷新令牌 + A4 API 版本化)",
     description="BottleSumo 治理中心 — 代理清单/策略管理/审计查看/VCE 可视化/RBAC",
 )
 
@@ -34,8 +34,13 @@ app.add_middleware(MetricsMiddleware)
 # 引擎门面: 同进程集成 agent-governance-v2
 app.state.governance_engine = GovernanceEngine()
 
-app.include_router(governance.router)
-app.include_router(auth.router)
+# ---- A4: API 版本化 ----
+# v1 版本化路由 (规范入口): /v1/api/*  → future-proof, 语义变更随版本演进
+# 遗留路由 (兼容入口):     /api/*      → S69 之前客户端继续可用, 标记 deprecated
+app.include_router(governance.router, prefix="/v1")
+app.include_router(auth.router, prefix="/v1")
+app.include_router(governance.router)   # 遗留兼容 (deprecated)
+app.include_router(auth.router)         # 遗留兼容 (deprecated)
 
 
 @app.on_event("startup")
@@ -53,6 +58,12 @@ def startup_seed():
 @app.get("/api/health")
 def health():
     return {"status": "ok", "engine": "agent-governance-v2", "sprint": "S69"}
+
+@app.get("/v1/api/health")
+def health_v1():
+    """A4: 版本化健康检查 (规范入口)。"""
+    return {"status": "ok", "engine": "agent-governance-v2",
+            "sprint": "S69", "api_version": "v1"}
 
 
 @app.get("/metrics")

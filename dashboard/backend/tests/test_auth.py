@@ -119,3 +119,46 @@ def test_user_management_admin_only(client):
         r = c.post("/api/auth/users",
                    json={"username": "hacker", "password": "x1234567", "role": "admin"})
         assert r.status_code == 403
+
+# ── S2: 刷新令牌 (refresh token rotation) ─────────────────────────
+
+def test_login_returns_token_pair():
+    """S2: 登录返回 access + refresh 令牌对。"""
+    with TestClient(app) as c:
+        r = c.post("/api/auth/login", json=AUTH)
+        assert r.status_code == 200
+        data = r.json()
+        assert "token" in data and "refresh_token" in data
+
+def test_refresh_exchanges_for_new_pair():
+    """S2: refresh 令牌 → 换发全新令牌对 (rotation)。"""
+    with TestClient(app) as c:
+        login = c.post("/api/auth/login", json=AUTH).json()
+        r = c.post("/api/auth/refresh",
+                   json={"refresh_token": login["refresh_token"]})
+        assert r.status_code == 200
+        data = r.json()
+        assert data["token"] != login["token"]
+        assert data["refresh_token"] != login["refresh_token"]
+        assert data["user"]["username"] == "admin"
+
+def test_refresh_token_cannot_be_used_as_access():
+    """S2: refresh 令牌冒充访问令牌 → 401 (类型门禁)。"""
+    with TestClient(app) as c:
+        login = c.post("/api/auth/login", json=AUTH).json()
+        c.headers.update({"Authorization": f"Bearer {login['refresh_token']}"})
+        assert c.get("/api/auth/me").status_code == 401
+
+def test_refresh_with_access_token_rejected():
+    """S2: access 令牌不能用于 /refresh 端点。"""
+    with TestClient(app) as c:
+        login = c.post("/api/auth/login", json=AUTH).json()
+        r = c.post("/api/auth/refresh",
+                   json={"refresh_token": login["token"]})
+        assert r.status_code == 401
+
+def test_refresh_with_garbage_token_rejected():
+    with TestClient(app) as c:
+        r = c.post("/api/auth/refresh", json={"refresh_token": "garbage"})
+        assert r.status_code == 401
+

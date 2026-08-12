@@ -308,3 +308,28 @@ class TestPolicyEditor:
             "protocol": "feynman_test", "yaml": BROKEN_YAML})
         assert r.status_code == 422  # 验证失败 → 拒绝部署 (422)
         assert r.json()["detail"]["deployed"] is False
+# ── A4: API 版本化 (/v1/ 前缀) ─────────────────────────────────────
+
+def test_v1_versioned_health(client):
+    """A4: /v1/api/health 可达且标记 api_version。"""
+    r = client.get("/v1/api/health")
+    assert r.status_code == 200
+    assert r.json()["api_version"] == "v1"
+
+def test_v1_auth_login(client):
+    """A4: /v1/api/auth/login 与遗留 /api/auth/login 行为一致。"""
+    r1 = client.post("/v1/api/auth/login",
+                     json={"username": "admin", "password": "admin123"})
+    r2 = client.post("/api/auth/login",
+                     json={"username": "admin", "password": "admin123"})
+    assert r1.status_code == 200
+    assert r2.status_code == 200
+    assert "token" in r1.json()
+
+def test_v1_governance_agents_mirrors_legacy(client):
+    """A4: /v1/api/governance/agents 与遗留端点返回一致 (挂载生效)。"""
+    r1 = client.get("/v1/api/governance/agents")
+    r2 = client.get("/api/governance/agents")
+    assert r1.status_code == 200
+    assert r1.json() == r2.json()
+
