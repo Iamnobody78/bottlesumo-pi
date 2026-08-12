@@ -1,6 +1,6 @@
 # 架构
 
-见仓库根 [ARCHITECTURE.md](../ARCHITECTURE.md)。
+见仓库根 [ARCHITECTURE.md](https://github.com/Iamnobody78/bottlesumo-pi/blob/main/ARCHITECTURE.md)。
 
 ## 快速摘要
 
