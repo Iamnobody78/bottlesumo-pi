@@ -68,6 +68,8 @@ nav:
     - S58 F2 质量自适应: msan/s58_f2_quality_adaptive.md
   - 产品化:
     - Dashboard 规格: productization/dashboard_spec.md
+    - ROS 2 集成协议: productization/ros_integrate_protocol_v1.md
+    - ROS 2 集成 ROUND 0 报告: productization/ros_int_round0_report.md
   - Sprint 队列:
     - 队列 5 清单: sprints/queue5_manifest.md
   - 开发: contributing.md
