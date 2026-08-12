@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+### Added (2026-08-10 GitHub 生态配置, DUAL-ECO GAP-6.10)
+- GitHub 双仓库生态配置（零 UI 纯 API）: Issues + Discussions 启用（GraphQL）、main 分支保护（1 review + enforce_admins + strict + 禁 force-push）
+- `.github/CODEOWNERS`（双仓库, 走 PR 流程, 见 PR #15 / agent-governance-v2 #11）
+- `scripts/github_auto_setup.sh`（修正版自动化脚本: REST/GraphQL 双通道 + BOM/409 陷阱注释）
+
+### Changed
+- **工作流转变**: main 分支受保护后，代理变更一律走 PR + PM 审批（不再直推 main）——治理生态自治生效
+
 ## [v2.1.0] — 2026-08-10 · ARCH-ROUND 1（生产基线：数据库 + 可观测性 + 容器化）
 
 ### Added
