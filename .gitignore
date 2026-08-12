@@ -34,6 +34,9 @@ governance/meta_harness/_cache/
 governance/meta_harness/_tmp/
 governance/meta_harness/experience/
 
+# TLS 证书私钥 (S6 — 不得入库, 见 deployment/README.md)
+deployment/certs/
+
 # 仿真资产 (140GB 级, WSL 侧/本地, 不入 git)
 models/mujoco_aggressive_trajectories/
 models/*.pt
