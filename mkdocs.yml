@@ -18,6 +18,7 @@ nav:
   - 首页: index.md
   - 架构: architecture.md
   - 架构文档:
+    - 架构总纲: architecture_overview.md
     - 生产化路线图: architecture/ROADMAP_PRODUCTION.md
     - 架构演进路线: architecture/ROADMAP_v2.md
     - 数据库设计: architecture/database.md

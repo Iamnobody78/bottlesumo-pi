@@ -49,10 +49,11 @@ jobs:
           pip install --upgrade pip
           pip install -r bottlesumo-pi/dashboard/backend/requirements.txt
           pip install -r agent-governance-v2/requirements.txt
-      - name: Run dashboard backend tests
+      - name: Run dashboard backend tests (with coverage gate)
         working-directory: bottlesumo-pi/dashboard/backend
         run: |
-          python -m pytest tests -q --no-header
+          python -m pytest tests -q --no-header \
+            --cov=. --cov-report=term --cov-fail-under=90
       - name: Run governance engine tests
         working-directory: agent-governance-v2
         run: |
