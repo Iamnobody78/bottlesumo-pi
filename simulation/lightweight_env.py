@@ -62,9 +62,16 @@ class LightweightBottleSumoEnv(gym.Env):
     """
     V10 BottleSumo environment with 21-level action space.
 
-    Observation (7 dims):
+    Observation (9 dims):
         [edge_front, edge_back, edge_left, edge_right,
-         opponent_dist, opponent_angle, robot_speed]
+         opponent_dist, opponent_angle, robot_speed,
+         opp_vel_fwd, opp_vel_right]
+      - edge_*: 1.0 = safe (center), 0.0 = off-ring / fell. Fall terminal when < 0.3.
+      - opponent_dist: 0..4.0 m (capped), opponent_angle: -180..180 deg (relative heading)
+      - robot_speed: -0.7..0.7 m/s
+      - opp_vel_fwd / opp_vel_right: opponent velocity projected onto robot's
+        forward/right axes, normalized by /0.6, clamped -1..1 (added Sprint 37 T1;
+        the old "7 dims" docstring was stale — 9-dim is the live contract).
 
     Action:
         Discrete(21) — wheel_to_discrete.Action enum
