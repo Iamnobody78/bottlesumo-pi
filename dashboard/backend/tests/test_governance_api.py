@@ -38,6 +38,11 @@ def client():
     from main import app
     app.state.governance_engine = engine
     with TestClient(app) as c:
+        # RBAC (ARCH-ROUND 2 / GAP-3.1): startup seed 创建 admin → 登录注入认证头
+        r = c.post("/api/auth/login", json={"username": "admin", "password": "admin123"})
+        assert r.status_code == 200, f"admin login failed: {r.text}"
+        token = r.json()["token"]
+        c.headers.update({"Authorization": f"Bearer {token}"})
         yield c
 
 

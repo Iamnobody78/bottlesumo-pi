@@ -22,6 +22,7 @@ import urllib.error
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 BASE = "http://127.0.0.1:8010/api/governance"
+AUTH_BASE = "http://127.0.0.1:8010/api/auth"
 VALID_PROTOCOL = """schema_version: 11-col-v1
 protocol:
   module: e2e_demo
@@ -46,11 +47,24 @@ protocol:
 passed = failed = 0
 
 
+def login() -> str:
+    """RBAC (ARCH-ROUND 2): 登录 admin 拿 JWT。"""
+    body = json.dumps({"username": "admin", "password": "admin123"}).encode()
+    req = urllib.request.Request(AUTH_BASE + "/login", data=body, method="POST",
+                                 headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        data = json.loads(resp.read().decode())
+    return data["token"]
+
+
+TOKEN = login()
+AUTH_HEADERS = {"Content-Type": "application/json", "Authorization": f"Bearer {TOKEN}"}
+
+
 def call(method: str, path: str, body=None) -> tuple[int, dict]:
     url = BASE + path
     data = json.dumps(body).encode() if body is not None else None
-    req = urllib.request.Request(url, data=data, method=method,
-                                 headers={"Content-Type": "application/json"})
+    req = urllib.request.Request(url, data=data, method=method, headers=AUTH_HEADERS)
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
             return resp.status, json.loads(resp.read().decode())

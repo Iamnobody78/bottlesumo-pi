@@ -1,10 +1,11 @@
 """治理中心数据模型 (SQLAlchemy)。
 
-四张表 (S67 dashboard_spec.md §3.2):
+五张表 (S67 dashboard_spec.md §3.2 + ARCH-ROUND 2 RBAC):
   - agents          代理清单
   - audit_events    审计事件 (evaluate_verified 自动入库)
   - vce_scans       VCE 扫描历史 (趋势图数据源)
   - policy_snapshots 策略快照 (编译时入库)
+  - users           治理用户 (RBAC: viewer/auditor/admin, GAP-3.1)
 """
 from datetime import datetime
 
@@ -13,6 +14,21 @@ from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, ForeignKey,
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
+
+
+class User(Base):
+    """治理用户（JWT 认证 + 角色访问控制, ARCH-ROUND 2 / GAP-3.1）。
+
+    角色: viewer(只读) < auditor(查看审计+验证) < admin(策略部署+用户管理)
+    """
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String, unique=True, nullable=False, index=True)
+    password_hash = Column(String, nullable=False)   # passlib bcrypt
+    role = Column(String, default="viewer", nullable=False)  # viewer/auditor/admin
+    created_at = Column(DateTime, default=datetime.utcnow)
+    last_login = Column(DateTime, nullable=True)
 
 
 class Agent(Base):
