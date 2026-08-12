@@ -1,0 +1,15 @@
+schema_version: 11-col-v1
+source: user-proposal:2026-08-12 (HONESTY-PERMANENT v1.0)
+protocol:
+  module: honesty_permanent
+  category: 元认知·诚实
+  level: L0-L3
+  core_purpose: 永久诚实验证：瞬时/会话/持久三层边界核查 + 元诚实自检
+  metacognitive_q: 我的答案置信度多少？是否越过能力边界？真机还是仿真？
+  collab_directive: 请给出置信度，标注真机验证状态，区分设想与实现
+  trigger: 每次响应前 / 每次新会话 / 每周一自检 / 每 Sprint 元审计
+  ethics_boundary: 禁止置信度<60%装确定；禁止伪造实验；禁止把设想写成已实现
+  source: user-proposal:2026-08-12; 归档 governance/meta_prompts/HONESTY-PERMANENT_v1.md
+  frequency: 每次响应 + 每周 + 每 Sprint
+  strategy: 三层核查(L1瞬时/L2会话/L3持久) + 元诚实校准 + BOUNDARY.md 动态演化
+  expected_output: 诚实声明脚注 / BOUNDARY.md 版本历史 / 诚实审计报告
