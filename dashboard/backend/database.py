@@ -23,13 +23,21 @@ _factory = None  # 模块级默认会话工厂缓存
 def resolve_db_url(db_path: Optional[str] = None, db_url: Optional[str] = None) -> str:
     """解析最终数据库 URL（纯函数，不触发驱动加载——单测安全）。
 
-    优先级: db_url 参数 > GOV_DASH_DB_URL 环境变量（实时读取，支持测试 monkeypatch）
-           > SQLite(db_path 或 GOV_DASH_DB)
+    优先级（显式参数 > 环境变量，修复 CI PG job 中 db_path 被 env 覆盖导致的种子累计）:
+      1. db_url 参数
+      2. db_path 参数（显式指定 → SQLite 文件，测试隔离）
+      3. GOV_DASH_DB_URL 环境变量（实时读取，支持测试 monkeypatch）
+      4. GOV_DASH_DB / 默认 governance.db
     """
-    url = db_url or os.getenv("GOV_DASH_DB_URL") or DB_URL
+    if db_url:
+        return db_url
+    if db_path:
+        os.makedirs(os.path.dirname(db_path), exist_ok=True)
+        return f"sqlite:///{db_path}"
+    url = os.getenv("GOV_DASH_DB_URL")
     if url:
         return url
-    path = db_path or DB_PATH
+    path = os.getenv("GOV_DASH_DB") or DB_PATH
     os.makedirs(os.path.dirname(path), exist_ok=True)
     return f"sqlite:///{path}"
 

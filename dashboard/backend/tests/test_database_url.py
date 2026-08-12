@@ -10,8 +10,10 @@ from sqlalchemy.engine import make_url
 from database import DB_PATH, build_engine, resolve_db_url
 
 
-def test_default_sqlite_engine():
-    """默认仍为 SQLite（向后兼容）。"""
+def test_default_sqlite_engine(monkeypatch):
+    """默认仍为 SQLite（向后兼容）。CI PG job 设置了 GOV_DASH_DB_URL，需 delenv 模拟无配置场景。"""
+    monkeypatch.delenv("GOV_DASH_DB_URL", raising=False)
+    monkeypatch.delenv("GOV_DASH_DB", raising=False)
     engine = build_engine()
     assert engine.url.get_backend_name() == "sqlite"
 

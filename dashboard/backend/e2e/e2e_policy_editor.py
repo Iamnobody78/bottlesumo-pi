@@ -86,6 +86,21 @@ def main() -> None:
     print("策略编辑器 E2E (真实 HTTP :8010)")
     print("=" * 64)
 
+    # RULE-ARCH-004: E2E 部署会落盘 config/protocols/e2e_demo.yaml，
+    # 必须在 finally 中自清理，避免污染真实协议目录 (seed 计数 12≠9)。
+    e2e_protocol_file = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..", "..", "..", "..",
+        "agent-governance-v2", "config", "protocols", "e2e_demo.yaml")
+    try:
+        _run_checks()
+    finally:
+        if os.path.exists(e2e_protocol_file):
+            os.remove(e2e_protocol_file)
+            print(f"  [CLEANUP] 移除残留 {os.path.basename(e2e_protocol_file)}")
+
+
+def _run_checks() -> None:
     # 0. 健康检查 (实际路由 /api/health)
     try:
         with urllib.request.urlopen(BASE.replace("/governance", "/health"), timeout=5) as resp:
