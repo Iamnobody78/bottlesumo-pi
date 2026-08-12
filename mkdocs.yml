@@ -17,7 +17,13 @@ theme:
 nav:
   - 首页: index.md
   - 架构: architecture.md
-  - 生产化路线图: architecture/ROADMAP_PRODUCTION.md
+  - 架构文档:
+    - 生产化路线图: architecture/ROADMAP_PRODUCTION.md
+    - 架构演进路线: architecture/ROADMAP_v2.md
+    - 数据库设计: architecture/database.md
+    - 可观测性: architecture/observability.md
+    - 部署指南: architecture/deployment.md
+    - 认证与授权: architecture/authz.md
   - 治理: governance.md
   - 开发: contributing.md
   - 变更: changelog.md
