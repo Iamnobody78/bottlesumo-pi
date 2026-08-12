@@ -25,6 +25,13 @@ nav:
     - 部署指南: architecture/deployment.md
     - 认证与授权: architecture/authz.md
   - 治理: governance.md
+  - 审计记录:
+    - 审计队列 S4 关账: audits/audit_queue4_closeout.md
+  - 工程记录:
+    - 治理审计 20260807: engineering/governance_audit_20260807.md
+    - Nano 系列关账: engineering/nano_series_closeout_20260809.md
+    - P1L2 环境引导证据: engineering/p1l2_env_bootstrap_evidence_20260807.md
+    - 性能基线 20260807: engineering/performance_baseline_20260807.md
   - 开发: contributing.md
   - 变更: changelog.md
 
