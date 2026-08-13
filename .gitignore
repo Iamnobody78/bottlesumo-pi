@@ -105,3 +105,11 @@ governance/dashboard/backend/*.db-journal
 governance/meta_harness/diag_*.py
 governance/meta_harness/disk_*.ps1
 governance/meta_harness/*.jsonl
+
+# SELF-EVOLVE 运行时产物 (自我进化循环输出, 非产品源码; 引擎见 self_evolve.py)
+governance/meta_harness/self_evolve_state.json
+governance/meta_harness/self_evolution_report.md
+governance/meta_harness/self_reports/
+
+# 测试覆盖率产物
+dashboard/backend/.coverage
