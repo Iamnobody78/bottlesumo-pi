@@ -1,6 +1,6 @@
 # 元能力五维评估表 (META-CAPABILITY SCORECARD)
 
-> 生成: 2026-08-13 (20260813_164458) | 工具: META-BOOTSTRAP v1.0 | 标签: META_SCORECARD
+> 生成: 2026-08-13 (20260813_164739) | 工具: META-BOOTSTRAP v1.0 | 标签: META_SCORECARD
 > 依据: meta_decisions.jsonl / pareto_frontier.md / failure_analysis.md /
 > meta_engineering_rules.md / experience/hypotheses.jsonl / sprint 报告
 
@@ -9,10 +9,10 @@
 | 维度 | 分数 (0-5) | 成熟度 | 关键证据 | 主要差距 |
 | :--- | :---: | :---: | :--- | :--- |
 | 元认知 (Meta-Cognition) | 3.0 | L3 | hypotheses_jsonl_lines=63; reasoning_chain=sprint 报告 + failure_analysis 记录; bias_detection_formalized=S56 fix=2 退化段已固化 (RULE-MC-013); jump 排除仍进行中 | 偏差检测 jump 排除未固化 (S56 进行中) |
-| 元监督 (Meta-Supervision) | 4.0 | L4 | meta_decisions_jsonl=1541; pareto_frontier_lines=548; gate_progress=V9 门 10% -> 90% (S38, chase-BC 直投 + defensive 审计) | HONEST-BOUNDARY 边界感知已设计未全量落地 |
+| 元监督 (Meta-Supervision) | 4.0 | L4 | meta_decisions_jsonl=1542; pareto_frontier_lines=548; gate_progress=V9 门 10% -> 90% (S38, chase-BC 直投 + defensive 审计) | HONEST-BOUNDARY 边界感知已设计未全量落地 |
 | 元调节 (Meta-Regulation) | 3.5 | L3~L4 | param_bounds_updates=88; meta_config=temperature/retrieval_threshold/target_priority 自适应 (stagnation 触发); target_priority_rotation=physics->reward->mapping 轮换 | 资源分配未与 SRS 联动 |
 | 元学习 (Meta-Learning) | 4.0 | L4 | rules_entries=16; cell_learning_events=169; failure_analysis_lines=1813 | 知识迁移跨领域形式化 (NCLT 教训 -> 其他传感器融合域) 未沉淀 |
-| 元进化 (Meta-Evolution) | 3.0 | L3 | sprint_reports=11; code_agent_proposer=存在 (56KB); candidates_dir=53 | 开放式改进未与 Meta-Harness 变体生成联动 (meta_evol 缺口 3) |
+| 元进化 (Meta-Evolution) | 3.0 | L3 | sprint_reports=11; code_agent_proposer=存在 (56KB); candidates_dir=53 | 变体生成联动阻塞 (meta_evol 缺口 3): variants.py 存在但 target 文件 simulation/*.py 不在 bottlesumo_pi (harness 文件在 firmware 仓库); 且 variants.py --self-test 有 cp950 编码 bug 未修 |
 
 **综合元能力指数 (MCI)**: 3.50/5.0 (L3 主导)
 
@@ -33,7 +33,7 @@
 ### 元监督 (Meta-Supervision) — L4 (4.0/5)
 
 **证据**:
-- meta_decisions_jsonl: 1541
+- meta_decisions_jsonl: 1542
 - pareto_frontier_lines: 548
 - gate_progress: V9 门 10% -> 90% (S38, chase-BC 直投 + defensive 审计)
 - monitor: meta_monitor.py (stagnation/loop/latency_anomaly)
@@ -73,7 +73,7 @@
 - self_evolve_loop: bootstrap_loop.py 数据驱动闭环 (scan->select->allocate->formalize)
 
 **差距 (改进候选)**:
-- 开放式改进未与 Meta-Harness 变体生成联动 (meta_evol 缺口 3)
+- 变体生成联动阻塞 (meta_evol 缺口 3): variants.py 存在但 target 文件 simulation/*.py 不在 bottlesumo_pi (harness 文件在 firmware 仓库); 且 variants.py --self-test 有 cp950 编码 bug 未修
 
 ## 结论与自举建议
 

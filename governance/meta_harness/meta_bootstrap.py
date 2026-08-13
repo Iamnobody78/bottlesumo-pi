@@ -147,7 +147,9 @@ def assess(tag=None):
             "architecture_decisions_formalized": "ROADMAP.md DEC-001..003 (架构演进决策记录)",
             "self_evolve_loop": "bootstrap_loop.py 数据驱动闭环 (scan->select->allocate->formalize)",
         },
-        "gaps": ["开放式改进未与 Meta-Harness 变体生成联动 (meta_evol 缺口 3)"],
+        "gaps": ["变体生成联动阻塞 (meta_evol 缺口 3): variants.py 存在但 target 文件"
+                 " simulation/*.py 不在 bottlesumo_pi (harness 文件在 firmware 仓库);"
+                 " 且 variants.py --self-test 有 cp950 编码 bug 未修"],
     }
 
     dims = {
