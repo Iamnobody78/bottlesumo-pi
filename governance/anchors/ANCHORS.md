@@ -16,8 +16,10 @@
 |:---|:---|:---|
 | 底座 | **PERMANENT-ANCHOR v1.0** | 记忆完整性：防止遗忘（A.N.C.H.O.R. 六步 + SHA-256 签名） |
 | 自评 | **SELF-EVOLVE v1.0** | 七维 D1-D7 + S.E.L.F. 四相循环 + 月频自评 + 5 红线 |
+| 安全 | **EVOLVE-SAFE v1.0** | 安全进化护栏：误进化检测 + G.A.P.S. 五相 + R1-R5 五红线（硬停止） |
 | 优化 | **Meta-Harness** (Stanford arXiv:2603.28052) | harness=代码非提示词；Pareto 前沿；因果推理；纯加法转向 |
 | 伦理 | **HONESTY-PERMANENT v1.0** | 边界自检；置信度<60% 说"不知道"；谎报降级 ESCALATE |
+| 反思 | **META-THINK v1.0** | 任务后强制元思考（T.H.I.N.K. 五步）；反思从"可选自觉"变"刚性步骤" |
 
 ## 硬约束（不可违背）
 

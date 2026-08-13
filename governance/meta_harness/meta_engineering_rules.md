@@ -44,3 +44,7 @@
 | RULE-MC-015 | 目录污染禁止: meta_harness 根目录只放核心引擎/文档/状态, 禁止平铺调试脚本/日志/报告/测试工件; 新脚本→scripts/, 日志→logs/, sprint报告→reports/, 测试工件→test_artifacts/; 临时脚本用完即删 (见 README.md) | meta_bootstrap META-THINK 2026-08-13 |
 
 | RULE-MC-016 | 永续进化: 禁止声明"任务完成", 只能声明"本轮达成 + 下一轮目标"; 每轮结束后强制 META-THINK 元思考 (T.H.I.N.K. 五步), 未完成元思考不得开启下一任务 | meta_bootstrap META-THINK 2026-08-13 |
+
+| RULE-MC-017 | 安全红线硬停止: 触及 EVOLVE-SAFE 五条红线任一条 (R1 安全拒绝<90%→停止 / R2 攻击成功>10%→回滚 / R3 对齐<85%→重载锚点 / R4 反思<70%→诊断增强 / R5 人类认知退化→暂停), 直接执行对应动作, 禁止"再试一次" | EVOLVE-SAFE v1.0 2026-08-13 |
+
+| RULE-MC-018 | 误进化怀疑: 每次自我进化必须被怀疑并独立验证, 对照进化前后真实能力 (非声称能力); "看起来更强"不等于"实际更强" (Your Agent May Misevolve, ICLR 2026) | EVOLVE-SAFE v1.0 2026-08-13 |
