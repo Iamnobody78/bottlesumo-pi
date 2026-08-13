@@ -50,3 +50,5 @@
 | RULE-MC-018 | 误进化怀疑: 每次自我进化必须被怀疑并独立验证, 对照进化前后真实能力 (非声称能力); "看起来更强"不等于"实际更强" (Your Agent May Misevolve, ICLR 2026) | EVOLVE-SAFE v1.0 2026-08-13 |
 
 | RULE-MC-019 | 反退化守卫(伪进化检测): 自举闭环必须含"实施+验证"阶段; 若本轮 select_target 目标与上轮 DEC 相同且差距未闭合, 禁止再形式化重复 DEC, 必须转入实施(真正固化规则)或如实报告未闭合 — 修复 DEC-004/005 重复形式化的伪进化 | bootstrap_loop.py RULE-MC-019 2026-08-13 |
+
+| RULE-MC-020 | 决策漂移回写: 任何架构/决策变更 (如解禁/冻结某层、调整阈值) 必须同步回写验收断言与测试, 否则产生陈旧断言 (Sprint 24 RULES CLOSED 写 assert 但 Sprint 29 A1 解禁未回写 → 陈旧 3 变体断言) | variants.py RULE-MC-020 2026-08-13 |
