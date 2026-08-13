@@ -38,3 +38,5 @@
 | RULE-TS-004 | 测试隔离: 凡测试涉及写持久化文件的辅助函数 (如 `_record_diff_decision`), 必须在 fixture 层隔离 (mock 或临时目录), 禁止直接修改运行时审计日志 | PM 治理 2026-08-08 (FP-MC-016 修复经验) |
 
 | RULE-MC-013 | 传感器退化段不是失锁: 码/浮点解 (fix=2) 携带冻结/陈旧坐标, 按退化段处理 (软位置更新 + 协方差增长), 而非纯 DR 保持; 检测特征 = 连续相同坐标 + fix 降级 (NCLT 实证: 02-23 154s -> +10km) | meta_bootstrap S56 实证 2026-08-10 (ID 冲突修正: 原 RULE-MC-011 与 cell_learner 重复) |
+
+| RULE-MC-014 | 不确定性来源必须三通道标注: 输出不确定时, 标注来源 = 数据不足(DATA_INSUFFICIENT)/模型局限(MODEL_LIMITATION)/工具不可用(TOOL_UNAVAILABLE), 不得静默继续; 实现 uncertainty_source.py classify_uncertainty() + annotate_uncertainty() | meta_bootstrap D7 自举 2026-08-13 |

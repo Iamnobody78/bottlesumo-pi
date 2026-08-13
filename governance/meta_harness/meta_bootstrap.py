@@ -84,18 +84,18 @@ def assess(tag=None):
     n_cell_learn = types.get("cell_learning", 0)
 
     # ---- 五维评分 (0-5, 对应 L0-L5) ----
-    # 元认知: 置信度标注(hyp conf) + 推理链 + 不确定性来源识别(待落地)
+    # 元认知: 置信度标注(hyp conf) + 推理链 + 不确定性来源识别(已形式化)
     meta_cog = {
-        "score": 2.5,
-        "level": "L2",
+        "score": 3.0,
+        "level": "L3",
         "evidence": {
             "hypotheses_jsonl_lines": n_hyp,
             "reasoning_chain": "sprint 报告 + failure_analysis 记录",
-            "bias_detection_formalized": "S56 进行中 (fix=2 退化段 + jump 排除实证)",
-            "uncertainty_source_id": "待落地 (框架自评 ⚡)",
+            "bias_detection_formalized": "S56 fix=2 退化段已固化 (RULE-MC-013); jump 排除仍进行中",
+            "uncertainty_source_id": "已形式化 (uncertainty_source.py 三通道 + RULE-MC-014), 待真实运行积累标注",
         },
-        "gaps": ["不确定性来源识别 (数据不足/模型局限/工具不可用) 未形式化",
-                 "偏差检测已实证 (S56: 02-23 fix=2 退化段 154s -> +10km) 但未固化为可复用能力"],
+        "gaps": ["偏差检测 jump 排除未固化 (S56 进行中)",
+                 "不确定性标注机制已建 (uncertainty_source.py) 但未在真实运行中 exercise"],
     }
 
     # 元监督: 监控 + 门禁 + 异常检测
@@ -138,16 +138,16 @@ def assess(tag=None):
 
     # 元进化: 架构演进 + 自举循环
     meta_evol = {
-        "score": 2.5,
-        "level": "L2~L3",
+        "score": 3.0,
+        "level": "L3",
         "evidence": {
             "sprint_reports": n_reports,
             "code_agent_proposer": "存在 (56KB)",
             "candidates_dir": n_cand,
+            "architecture_decisions_formalized": "ROADMAP.md DEC-001..003 (架构演进决策记录)",
+            "self_evolve_loop": "bootstrap_loop.py 数据驱动闭环 (scan->select->allocate->formalize)",
         },
-        "gaps": ["架构演进决策未形式化 (无 ROADMAP.md 决策记录)",
-                 "自举循环 (用自身输出改进自身) 未落地",
-                 "开放式改进未与 Meta-Harness 变体生成联动"],
+        "gaps": ["开放式改进未与 Meta-Harness 变体生成联动 (meta_evol 缺口 3)"],
     }
 
     dims = {
@@ -199,9 +199,9 @@ def assess(tag=None):
     lines += [
         "## 结论与自举建议",
         "",
-        f"- MCI={avg:.2f}: 元监督/元学习最成熟 (L4), 元认知/元进化最薄弱 (L2-L3)",
-        "- **自举优先级**: 先补元认知 (偏差检测形式化 + 不确定性来源识别), 再补元进化 (架构演进决策 + 自举循环)",
-        "- S56 实证已为元认知-偏差检测提供现成素材: fix=2 退化段检测 (JUMP_DMAX/F2_SIGMA) 可固化为可复用能力",
+        f"- MCI={avg:.2f}: 元监督/元学习最成熟 (L4), 元认知 (L3, 已升) / 元进化 (L2-L3) 为当前最薄弱",
+        "- **自举优先级**: 元认知不确定性来源已形式化 (R-014); 下一优先 = 元进化 (架构演进决策已落地 ROADMAP, 变体生成联动仍缺口) + 元认知 jump 排除固化",
+        "- S56 实证已为元认知-偏差检测提供现成素材: fix=2 退化段检测已固化 (RULE-MC-013), jump 排除待固化",
         "",
     ]
     out = _p("meta_capability_scorecard.md")
@@ -347,9 +347,10 @@ def evolve(iterations=1, tag=None):
 - 决策记录: meta_decisions.jsonl (type=meta_bootstrap)
 
 ## 下一轮候选
-1. 元进化-架构演进决策形式化 (ROADMAP.md 决策记录)
-2. 元调节-工具选择与 MCP 联动 (mcp_usage_report.jsonl 已有数据可驱动)
-3. 元认知-不确定性来源识别 (数据不足/模型局限/工具不可用 三通道标注)
+1. 元进化-变体生成联动 (meta_evol 缺口 3, 未闭合)
+2. 元认知-偏差检测 jump 排除固化 (S56 进行中)
+3. 元调节-工具选择与 MCP 联动 (mcp_usage_report.jsonl 已有数据可驱动)
+4. ~~元认知-不确定性来源识别~~ ✅ 已形式化 (uncertainty_source.py + RULE-MC-014, 2026-08-13)
 """)
     _append_decision({
         "ts": TS, "type": "meta_bootstrap", "tag": tag or "META_EVOLVE",
@@ -357,7 +358,7 @@ def evolve(iterations=1, tag=None):
         "rule_added": rule_id if rule_landed else None,
         "rule_dedup": not rule_landed,
         "evidence": "S56: 02-23 pos RMSE 443.85->36.96m (-91.7%), velocity 148->0.41 m/s",
-        "pending": "S56 T3 27-session backtest gate" if rule_landed else "S56 已落地(RULE-MC-013), 下一差距=元认知-不确定性来源识别",
+        "pending": "S56 T3 27-session backtest gate" if rule_landed else "S56 已落地(RULE-MC-013), 不确定性来源已形式化(RULE-MC-014), 下一差距=元进化-变体生成联动",
     })
     _log(f"Phase N+D: baseline + evolution record 已写入; decision 已追加 ({'pending T3 gate' if rule_landed else 'dedup: 已落地, 待转向下一差距'})")
     return 0

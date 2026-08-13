@@ -1538,3 +1538,5 @@
 {"ts": "20260813_162632", "type": "bootstrap_loop", "dec_id": "DEC-20260813-001", "target_dim": "元认知", "rule_collisions_found": {"11": 2}, "next_rule_id": "RULE-MC-014"}
 {"ts": "20260813_163337", "type": "bootstrap_loop", "dec_id": "DEC-20260813-002", "target_dim": "元认知", "rule_collisions_found": {}, "next_rule_id": "RULE-MC-014"}
 {"ts": "20260813_164001", "type": "meta_bootstrap", "tag": "D7_BOOTSTRAP_FINAL", "target_dim": "元认知", "rule_added": null, "rule_dedup": true, "evidence": "S56: 02-23 pos RMSE 443.85->36.96m (-91.7%), velocity 148->0.41 m/s", "pending": "S56 已落地(RULE-MC-013), 下一差距=元认知-不确定性来源识别"}
+{"ts": "20260813_164433", "type": "bootstrap_loop", "dec_id": "DEC-20260813-003", "target_dim": "元进化", "rule_collisions_found": {}, "next_rule_id": "RULE-MC-015"}
+{"ts": "20260813_164459", "type": "bootstrap_loop", "dec_id": "DEC-20260813-004", "target_dim": "元认知", "rule_collisions_found": {}, "next_rule_id": "RULE-MC-015"}
