@@ -81,5 +81,17 @@
 - **验收**: python variants.py --self-test 退出码 0, 无 AssertionError, 无 UnicodeEncodeError
 - **余部 (未闭合, 已纠偏)**: ~~lightweight_env.py 跨仓库定位 (firmware repo)~~ 已证伪 — 实测 4 个 harness 文件全部在 bottlesumo_pi (abdl_action_bridge.py 25KB / simulation_rules.abdl 7KB / lightweight_env.py 25KB / wheel_to_discrete.py 8KB), physics 层 "SEED_TEMPLATE" 是"物理动量已在边界无新梯度"的合法状态。真正余部 = variants 未在真实 Renode 中证明改进胜率 (L4 缺口) + 元认知 jump 排除固化 (S56)
 
+## DEC-20260813-008 — V9 裁决门实测纠偏 (胜率 100% 非 10%)
+
+- **决策**: 实测 V9 裁决门实际状态为 PASS (100% 胜率), 纠偏系统提示中的"10%胜率(1/10) < 60%阈值, plateau_explorer 待触发"陈旧前提
+- **维度**: 元监督 (Meta-Supervision)
+- **因果推理**:
+  - 为何失败: 系统提示/会话启动序列中的 V9 裁决门状态 (10%胜率) 是陈旧快照, 未在会话中实测校验就直接作为决策前提
+  - 在哪分歧: 与"实测优于假设"分歧 —— 系统提示声称 10%, 但 Sprint 59 (defensive 50%→100%) + 后续工作已把胜率推到 100% 天花板
+  - 如何修复: 实测 python v9_gate_evaluator.py --episodes 40 → PASS, WR=100% (40/40); 胜率已达天花板, plateau_explorer 无需触发; meta-harness 变体目标从"改进胜率"重定向到 avg_steps/鲁棒性/更难对手
+- **证据**: python v9_gate_evaluator.py --episodes 40 输出: random 8/8 (avg_steps 20), aggressive 8/8 (10), defensive 8/8 (44), circler 8/8 (18), counter 8/8 (7)
+- **验收**: V9 门 PASS (100% ≥ 60% 阈值); 系统提示 V9 状态需更新为实测值; 这是本会话第 3 次"摘要/系统提示结论 ≠ 当前事实"的纠偏 (前 2 次: harness 文件跨仓库、lightweight_env 缺失)
+
+
 
 
