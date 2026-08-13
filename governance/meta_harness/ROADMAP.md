@@ -58,3 +58,15 @@
 - **证据**: scorecard={"元认知": 3.0, "元监督": 4.0, "元调节": 3.5, "元学习": 4.0, "元进化": 3.0}; 差距候选=偏差检测 jump 排除未固化 (S56 进行中); 不确定性标注机制已建 (uncertainty_source.py) 但未在真实运行中 exercise
 - **验收**: 下一轮 scan_scorecard 中 元认知 分数提升 (需证据, 无证据不改分)
 
+## DEC-20260813-006 — 反退化守卫: 修复自举循环伪进化 (RULE-MC-019)
+
+- **决策**: 检测到 DEC-004 与 DEC-005 完全重复 (同一目标"元认知 3.0"→同一规则"RULE-MC-015"→同一差距), 判定为伪进化; 在 bootstrap_loop.py 中新增 `_detect_stale` 反退化守卫, 若本轮 select_target 目标与上轮 DEC 相同且差距未闭合, 禁止再写重复 DEC, 转入实施阶段
+- **维度**: 元进化 (Meta-Evolution)
+- **因果推理**:
+  - 为何失败: run() 只做 formalize (写 DEC 记录), 从未做 implement (真正把规则 append 到 meta_engineering_rules.md) + verify (复核差距是否闭合); 导致 allocate_rule_id 每轮都返回同一个 RULE-MC-015 (因为该规则从未真正落盘, max_n 始终=14), 于是 DEC 反复重复, ROADMAP 膨胀但能力零提升
+  - 在哪分歧: 与 "每次自以为成功 还是要自举 元思考很重要" 的用户元认知判据分歧 —— 循环把"写一条决策记录"误当成"完成一次进化", 未验证差距是否真正闭合
+  - 如何修复: (1) `_last_dec_signature()` 读取上轮 DEC 的(维度,证据)签名; (2) `_detect_stale()` 若本轮差距候选全包含于上轮证据 → 判定未闭合; (3) run() 命中守卫时输出伪进化报告并阻止重复 DEC; (4) 本轮额外真正落地 RULE-MC-019 (实施阶段), 而非只形式化
+- **证据**: ROADMAP.md DEC-004 (行 39-48) 与 DEC-005 (行 50-59) 逐字重复; bootstrap_loop.py run() 执行输出 "[RULE-MC-019 反退化守卫] 检测到伪进化, 已阻止重复 DEC 形式化"; 本轮 RULE-MC-019 已实际 append 至 meta_engineering_rules.md (max_n 14→19)
+- **验收**: 再次运行 bootstrap_loop.py 不再产生重复 DEC; 若目标未闭合则输出伪进化报告而非新增 DEC
+
+

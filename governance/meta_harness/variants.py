@@ -32,6 +32,10 @@ import re
 import sys
 from dataclasses import dataclass, field, asdict
 
+# Windows cp950 控制台编码修复: 打印中文血缘标题时避免 UnicodeEncodeError
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 META_HARNESS_DIR = os.path.dirname(os.path.abspath(__file__))
 

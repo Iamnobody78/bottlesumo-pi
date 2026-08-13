@@ -152,6 +152,51 @@ def formalize_decision(dec):
     return dec_id
 
 
+# ── 反退化守卫 (RULE-MC-019): 检测"伪进化"——目标与历史 DEC 相同且差距未闭合 ─────────
+def _all_dec_signatures():
+    """读取 ROADMAP.md 所有 DEC 的 (维度, 证据) 签名列表 (按时间正序)。
+
+    用于检测伪进化: 若本轮 select_target 选中的目标 + 差距 与任一历史 DEC 一致,
+    说明该差距此前已被形式化但从未真正闭合 —— 禁止再写一条重复 DEC。
+    """
+    p = _p("ROADMAP.md")
+    if not os.path.exists(p):
+        return []
+    try:
+        txt = open(p, encoding="utf-8", errors="replace").read()
+    except OSError:
+        return []
+    blocks = re.findall(r"## (DEC-\d{8}-\d{3}) — (.+?)\n(.*?)(?=\n## DEC-|\Z)", txt, re.S)
+    sigs = []
+    for dec_id, title, body in blocks:
+        dim_m = re.search(r"- \*\*维度\*\*:\s*(.+)", body)
+        ev_m = re.search(r"- \*\*证据\*\*:\s*(.+)", body)
+        sigs.append({
+            "dec_id": dec_id,
+            "title": title,
+            "dim": dim_m.group(1).strip() if dim_m else "",
+            "evidence": ev_m.group(1).strip() if ev_m else "",
+        })
+    return sigs
+
+
+def _detect_stale(target):
+    """若 target 与任一历史 DEC 是同一维度 + 同一差距 (未闭合), 返回命中 DEC 信息, 否则 None。"""
+    if not target:
+        return None
+    gaps = [g for g in target["gaps"] if g]
+    if not gaps:
+        return None
+    for sig in _all_dec_signatures():
+        # 维度匹配: DEC 的维度里应含 target dim (如 "元认知 (Meta-Cognition)")
+        if target["dim"] not in sig["dim"]:
+            continue
+        # 差距匹配: 本轮差距候选是否已在上轮证据里逐条出现 (全包含 = 未闭合)
+        if all(g in sig["evidence"] for g in gaps):
+            return sig
+    return None
+
+
 # ── run: 闭环 ─────────────────────────────────────────────────────────────
 def run():
     out = {}
@@ -159,6 +204,11 @@ def run():
     out["scorecard"] = scan_scorecard()
     out["target"] = select_target(out["scorecard"])
     out["next_rule_id"] = allocate_rule_id(out["rules"])
+
+    # 反退化守卫: 伪进化检测 (RULE-MC-019)
+    stale = _detect_stale(out["target"])
+    if stale:
+        return _stale_report(out, stale)
 
     # 决策: 数据驱动 —— 由 select_target 选中的最低分维度生成 (非硬编码)
     t = out["target"]
@@ -243,6 +293,27 @@ def run():
     L.append("[Honest Boundary]")
     L.append("- 本循环不修改分数(无证据不改分); 只建立闭环机制 + 数据驱动决策形式化")
     L.append("- 缺口 3(变体生成联动)仍未闭合, 待下一轮接; 本 DEC 仅形式化最低分维度定位结果")
+    return "\n".join(L) + "\n"
+
+
+# ── 伪进化报告 (RULE-MC-019): 目标未闭合时禁止重复形式化, 转为"需实施"信号 ──────
+def _stale_report(out, sig):
+    t = out["target"]
+    L = []
+    L.append("=" * 62)
+    L.append("[RULE-MC-019 反退化守卫] 检测到伪进化, 已阻止重复 DEC 形式化")
+    L.append("=" * 62)
+    L.append("本轮 select_target: %s (%.1f/5)" % (t["dim"], t["score"]))
+    L.append("差距候选: %s" % ("; ".join(t["gaps"]) if t["gaps"] else "无"))
+    L.append("")
+    L.append("历史 DEC (%s) 已形式化同一目标且差距未闭合:" % sig["dec_id"])
+    L.append("  维度: %s" % sig["dim"])
+    L.append("  证据: %s" % sig["evidence"])
+    L.append("")
+    L.append("根因: run() 只做 formalize (写 DEC), 未做 implement (真正落规则) + verify (复核闭合)。")
+    L.append("动作: 禁止再写重复 DEC; 必须转入实施阶段 (meta_bootstrap.evolve 或手动固化 RULE-MC)。")
+    L.append("")
+    L.append("[下一轮目标] 闭合差距 %s (%s) 而不是再次形式化" % (t["dim"], t["score"]))
     return "\n".join(L) + "\n"
 
 

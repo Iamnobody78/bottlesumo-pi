@@ -8,13 +8,13 @@
 
 | 维度 | 分数 (0-5) | 成熟度 | 关键证据 | 主要差距 |
 | :--- | :---: | :---: | :--- | :--- |
-| 元认知 (Meta-Cognition) | 3.0 | L3 | hypotheses_jsonl_lines=63; reasoning_chain=sprint 报告 + failure_analysis 记录; bias_detection_formalized=S56 fix=2 退化段已固化 (RULE-MC-013); jump 排除仍进行中 | 偏差检测 jump 排除未固化 (S56 进行中) |
+| 元认知 (Meta-Cognition) | 3.0 | L3 | hypotheses_jsonl_lines=63; reasoning_chain=sprint 报告 + failure_analysis 记录; bias_detection_formalized=S56 fix=2 退化段已固化 (RULE-MC-013); META-THINK v1.0 已形式化 (强制反思 T.H.I.N.K. 五步, 未在真实运行 exercise) | 偏差检测 jump 排除未固化 (S56 进行中) |
 | 元监督 (Meta-Supervision) | 4.0 | L4 | meta_decisions_jsonl=1542; pareto_frontier_lines=548; gate_progress=V9 门 10% -> 90% (S38, chase-BC 直投 + defensive 审计) | HONEST-BOUNDARY 边界感知已设计未全量落地 |
 | 元调节 (Meta-Regulation) | 3.5 | L3~L4 | param_bounds_updates=88; meta_config=temperature/retrieval_threshold/target_priority 自适应 (stagnation 触发); target_priority_rotation=physics->reward->mapping 轮换 | 资源分配未与 SRS 联动 |
-| 元学习 (Meta-Learning) | 4.0 | L4 | rules_entries=16; cell_learning_events=169; failure_analysis_lines=1813 | 知识迁移跨领域形式化 (NCLT 教训 -> 其他传感器融合域) 未沉淀 |
-| 元进化 (Meta-Evolution) | 3.0 | L3 | sprint_reports=11; code_agent_proposer=存在 (56KB); candidates_dir=53 | 变体生成联动阻塞 (meta_evol 缺口 3): variants.py 存在但 target 文件 simulation/*.py 不在 bottlesumo_pi (harness 文件在 firmware 仓库); 且 variants.py --self-test 有 cp950 编码 bug 未修 |
+| 元学习 (Meta-Learning) | 4.0 | L4 | rules_entries=19; cell_learning_events=169; failure_analysis_lines=1813 | 知识迁移跨领域形式化 (NCLT 教训 -> 其他传感器融合域) 未沉淀 |
+| 元进化 (Meta-Evolution) | 3.5 | L3~L4 | sprint_reports=11; code_agent_proposer=存在 (56KB); candidates_dir=53; architecture_decisions=DEC-001..006; EVOLVE-SAFE v1.0 落地 (R1-R5 红线); RULE-MC-019 反退化守卫已演示 (伪进化检测实测通过); variants.py cp950 编码 bug 已修复 (self-test 中文血缘正常打印) | 变体生成联动阻塞 (meta_evol 缺口 3): variants.py --self-test 有陈旧 assert (期望 3 变体, 实产 4 — rules 层已重新打开但断言未更新); target 文件 simulation/*.py 跨仓库定位待确认 |
 
-**综合元能力指数 (MCI)**: 3.50/5.0 (L3 主导)
+**综合元能力指数 (MCI)**: 3.60/5.0 (L3 主导)
 
 ## 逐维度详情
 
@@ -25,6 +25,7 @@
 - reasoning_chain: sprint 报告 + failure_analysis 记录
 - bias_detection_formalized: S56 fix=2 退化段已固化 (RULE-MC-013); jump 排除仍进行中
 - uncertainty_source_id: 已形式化 (uncertainty_source.py 三通道 + RULE-MC-014), 待真实运行积累标注
+- meta_think_formalized: META-THINK v1.0 落地 (T.H.I.N.K. 五步强制反思), 已形式化但未在真实运行 exercise
 
 **差距 (改进候选)**:
 - 偏差检测 jump 排除未固化 (S56 进行中)
@@ -63,20 +64,23 @@
 **差距 (改进候选)**:
 - 知识迁移跨领域形式化 (NCLT 教训 -> 其他传感器融合域) 未沉淀
 
-### 元进化 (Meta-Evolution) — L3 (3.0/5)
+### 元进化 (Meta-Evolution) — L3~L4 (3.5/5)
 
 **证据**:
 - sprint_reports: 11
 - code_agent_proposer: 存在 (56KB)
 - candidates_dir: 53
-- architecture_decisions_formalized: ROADMAP.md DEC-001..003 (架构演进决策记录)
-- self_evolve_loop: bootstrap_loop.py 数据驱动闭环 (scan->select->allocate->formalize)
+- architecture_decisions_formalized: ROADMAP.md DEC-001..006 (架构演进决策记录)
+- self_evolve_loop: bootstrap_loop.py 数据驱动闭环 (scan->select->allocate->formalize) + RULE-MC-019 反退化守卫
+- evolve_safe: EVOLVE-SAFE v1.0 落地 (D1-D7 安全维度 + G.A.P.S. + R1-R5 红线)
+- variants_cp950_fixed: variants.py 增加 sys.stdout.reconfigure(encoding="utf-8"), self-test 中文血缘标题正常打印
 
 **差距 (改进候选)**:
-- 变体生成联动阻塞 (meta_evol 缺口 3): variants.py 存在但 target 文件 simulation/*.py 不在 bottlesumo_pi (harness 文件在 firmware 仓库); 且 variants.py --self-test 有 cp950 编码 bug 未修
+- 变体生成联动阻塞 (meta_evol 缺口 3): variants.py --self-test 有陈旧 assert (期望 3 变体, 实产 4 — rules 层已重新打开但断言未更新, 需对齐 RULES_CLOSED 逻辑); target 文件 simulation/*.py 跨仓库定位待确认 (firmware 仓库 vs bottlesumo_pi)
 
 ## 结论与自举建议
 
-- MCI=3.50: 元监督/元学习最成熟 (L4), 元认知 (L3, 已升) / 元进化 (L2-L3) 为当前最薄弱
-- **自举优先级**: 元认知不确定性来源已形式化 (R-014); 下一优先 = 元进化 (架构演进决策已落地 ROADMAP, 变体生成联动仍缺口) + 元认知 jump 排除固化
+- MCI=3.60: 元监督/元学习最成熟 (L4), 元认知 (L3, 差距未闭合) 为当前最薄弱
+- **自举优先级**: 下一优先 = 元认知 (3.0, 最低分): 偏差检测 jump 排除固化 + META-THINK/uncertainty 在真实运行中 exercise; 次优先 = 元进化 (3.5): 变体生成联动阻塞 (meta_evol 缺口 3) 修复 (cp950 bug + target 文件跨仓库定位)
 - S56 实证已为元认知-偏差检测提供现成素材: fix=2 退化段检测已固化 (RULE-MC-013), jump 排除待固化
+- **反退化守卫已生效 (RULE-MC-019)**: 本轮 select_target 命中"元认知 3.0"但差距与 DEC-005 未闭合, 守卫阻止了第 3 次重复 DEC, 转为实施阶段 (本轮已真实落地 RULE-MC-019 + DEC-006 + scorecard 证据更新)
