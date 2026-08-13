@@ -12,7 +12,7 @@
 | 元监督 (Meta-Supervision) | 4.0 | L4 | meta_decisions_jsonl=1542; pareto_frontier_lines=548; gate_progress=V9 门 10% -> 90% (S38, chase-BC 直投 + defensive 审计) | HONEST-BOUNDARY 边界感知已设计未全量落地 |
 | 元调节 (Meta-Regulation) | 3.5 | L3~L4 | param_bounds_updates=88; meta_config=temperature/retrieval_threshold/target_priority 自适应 (stagnation 触发); target_priority_rotation=physics->reward->mapping 轮换 | 资源分配未与 SRS 联动 |
 | 元学习 (Meta-Learning) | 4.0 | L4 | rules_entries=19; cell_learning_events=169; failure_analysis_lines=1813 | 知识迁移跨领域形式化 (NCLT 教训 -> 其他传感器融合域) 未沉淀 |
-| 元进化 (Meta-Evolution) | 3.5 | L3~L4 | sprint_reports=11; code_agent_proposer=存在 (56KB); candidates_dir=53; architecture_decisions=DEC-001..006; EVOLVE-SAFE v1.0 落地 (R1-R5 红线); RULE-MC-019 反退化守卫已演示 (伪进化检测实测通过); variants.py cp950 编码 bug 已修复 (self-test 中文血缘正常打印) | 变体生成联动阻塞 (meta_evol 缺口 3): variants.py --self-test 有陈旧 assert (期望 3 变体, 实产 4 — rules 层已重新打开但断言未更新); target 文件 simulation/*.py 跨仓库定位待确认 |
+| 元进化 (Meta-Evolution) | 3.5 | L3~L4 | sprint_reports=11; code_agent_proposer=存在 (56KB); candidates_dir=53; architecture_decisions=DEC-001..006; EVOLVE-SAFE v1.0 落地 (R1-R5 红线); RULE-MC-019 反退化守卫已演示; variants.py cp950 + 陈旧 assert 已修 (--self-test 实测通过, 4 变体 rules/mapping/physics/action_map) | 变体生成联动阻塞 (meta_evol 缺口 3 余部): lightweight_env.py 跨仓库定位 (firmware repo) — physics 层回退 seed 模板; 元认知 jump 排除固化 (S56) 依赖 firmware 仓库跨仓库访问 |
 
 **综合元能力指数 (MCI)**: 3.60/5.0 (L3 主导)
 
@@ -74,9 +74,10 @@
 - self_evolve_loop: bootstrap_loop.py 数据驱动闭环 (scan->select->allocate->formalize) + RULE-MC-019 反退化守卫
 - evolve_safe: EVOLVE-SAFE v1.0 落地 (D1-D7 安全维度 + G.A.P.S. + R1-R5 红线)
 - variants_cp950_fixed: variants.py 增加 sys.stdout.reconfigure(encoding="utf-8"), self-test 中文血缘标题正常打印
+- variants_self_test_pass: 陈旧 assert 修正 (3→4 变体, 对齐 Sprint 29 A1 rules 层解禁), --self-test 实测通过 (4 变体 rules/mapping/physics/action_map)
 
 **差距 (改进候选)**:
-- 变体生成联动阻塞 (meta_evol 缺口 3): variants.py --self-test 有陈旧 assert (期望 3 变体, 实产 4 — rules 层已重新打开但断言未更新, 需对齐 RULES_CLOSED 逻辑); target 文件 simulation/*.py 跨仓库定位待确认 (firmware 仓库 vs bottlesumo_pi)
+- 变体生成联动阻塞 (meta_evol 缺口 3 余部): lightweight_env.py 跨仓库定位 (firmware repo) — physics 层回退 seed 模板 (物理动量已边界无新梯度); 元认知 jump 排除固化 (S56) 依赖 firmware 仓库跨仓库访问
 
 ## 结论与自举建议
 

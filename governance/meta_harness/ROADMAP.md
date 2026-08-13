@@ -69,4 +69,17 @@
 - **证据**: ROADMAP.md DEC-004 (行 39-48) 与 DEC-005 (行 50-59) 逐字重复; bootstrap_loop.py run() 执行输出 "[RULE-MC-019 反退化守卫] 检测到伪进化, 已阻止重复 DEC 形式化"; 本轮 RULE-MC-019 已实际 append 至 meta_engineering_rules.md (max_n 14→19)
 - **验收**: 再次运行 bootstrap_loop.py 不再产生重复 DEC; 若目标未闭合则输出伪进化报告而非新增 DEC
 
+## DEC-20260813-007 — 修复 variants.py 陈旧 assert (meta_evol 缺口 3 闭合)
+
+- **决策**: variants.py --self-test 的 assert 期望 3 变体 (rules 被 RULES CLOSED 排除), 但 Sprint 29 A1 (PM 裁决 P0) 已解禁 RULES CLOSED 禁令 (规则拓扑探索), 实际产出 4 变体; 将 assert 由 3→4 对齐当前架构
+- **维度**: 元进化 (Meta-Evolution)
+- **因果推理**:
+  - 为何失败: assert 写于 Sprint 24 (rules 层移出扰动循环, RULES CLOSED 外部治理), 但 Sprint 29 A1 重新打开 rules 拓扑层 (mh_rules_topo_A 空洞修复), 决策漂移未回写 assert → 陈旧断言
+  - 在哪分歧: 与"决策与代码同步"分歧 —— Sprint 29 A1 改了生成逻辑 (4 层), 却漏改验收断言 (仍 3 层)
+  - 如何修复: assert 3→4 (rules/mapping/physics/action_map), 注释标注 Sprint 29 A1 解禁依据; 修一 bug 露一 bug 的链条: cp950 → 陈旧 assert, 现已全部闭合
+- **证据**: 修复前 --self-test 报 "expected 3 variants ... got 4"; 修复后 --self-test 输出 "SELF-TEST OK" (4 变体: mh_rules_topo_A / mh_mapping_001 / mh_physics_seed_001 / mh_action_map_001)
+- **验收**: python variants.py --self-test 退出码 0, 无 AssertionError, 无 UnicodeEncodeError
+- **余部 (未闭合)**: lightweight_env.py 跨仓库定位 (firmware repo) — physics 层回退 seed 模板; 元认知 jump 排除固化 (S56) 依赖 firmware 仓库
+
+
 

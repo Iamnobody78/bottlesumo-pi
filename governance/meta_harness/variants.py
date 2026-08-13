@@ -1472,7 +1472,11 @@ def _self_test() -> int:
         print(f"    hypothesis: {d['hypothesis']}")
         print(f"    evidence: {d['evidence']} | bloodline: {d['bloodline']}")
         print(f"    provenance: {d.get('provenance')}")
-    assert len(variants) == 3, f"expected 3 variants (mapping/physics/action_map; rules 被 RULES CLOSED 排除), got {len(variants)}"
+    assert len(variants) == 4, (
+        "expected 4 variants (rules/mapping/physics/action_map); "
+        "rules 拓扑层已由 Sprint 29 A1 (PM 裁决 P0) 解禁 RULES CLOSED 禁令, "
+        f"不再是 3 层, got {len(variants)}"
+    )
     print("SELF-TEST OK")
     return 0
 
