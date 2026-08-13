@@ -79,7 +79,7 @@
   - 如何修复: assert 3→4 (rules/mapping/physics/action_map), 注释标注 Sprint 29 A1 解禁依据; 修一 bug 露一 bug 的链条: cp950 → 陈旧 assert, 现已全部闭合
 - **证据**: 修复前 --self-test 报 "expected 3 variants ... got 4"; 修复后 --self-test 输出 "SELF-TEST OK" (4 变体: mh_rules_topo_A / mh_mapping_001 / mh_physics_seed_001 / mh_action_map_001)
 - **验收**: python variants.py --self-test 退出码 0, 无 AssertionError, 无 UnicodeEncodeError
-- **余部 (未闭合)**: lightweight_env.py 跨仓库定位 (firmware repo) — physics 层回退 seed 模板; 元认知 jump 排除固化 (S56) 依赖 firmware 仓库
+- **余部 (未闭合, 已纠偏)**: ~~lightweight_env.py 跨仓库定位 (firmware repo)~~ 已证伪 — 实测 4 个 harness 文件全部在 bottlesumo_pi (abdl_action_bridge.py 25KB / simulation_rules.abdl 7KB / lightweight_env.py 25KB / wheel_to_discrete.py 8KB), physics 层 "SEED_TEMPLATE" 是"物理动量已在边界无新梯度"的合法状态。真正余部 = variants 未在真实 Renode 中证明改进胜率 (L4 缺口) + 元认知 jump 排除固化 (S56)
 
 
 
