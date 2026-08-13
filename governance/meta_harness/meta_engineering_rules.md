@@ -40,3 +40,7 @@
 | RULE-MC-013 | 传感器退化段不是失锁: 码/浮点解 (fix=2) 携带冻结/陈旧坐标, 按退化段处理 (软位置更新 + 协方差增长), 而非纯 DR 保持; 检测特征 = 连续相同坐标 + fix 降级 (NCLT 实证: 02-23 154s -> +10km) | meta_bootstrap S56 实证 2026-08-10 (ID 冲突修正: 原 RULE-MC-011 与 cell_learner 重复) |
 
 | RULE-MC-014 | 不确定性来源必须三通道标注: 输出不确定时, 标注来源 = 数据不足(DATA_INSUFFICIENT)/模型局限(MODEL_LIMITATION)/工具不可用(TOOL_UNAVAILABLE), 不得静默继续; 实现 uncertainty_source.py classify_uncertainty() + annotate_uncertainty() | meta_bootstrap D7 自举 2026-08-13 |
+
+| RULE-MC-015 | 目录污染禁止: meta_harness 根目录只放核心引擎/文档/状态, 禁止平铺调试脚本/日志/报告/测试工件; 新脚本→scripts/, 日志→logs/, sprint报告→reports/, 测试工件→test_artifacts/; 临时脚本用完即删 (见 README.md) | meta_bootstrap META-THINK 2026-08-13 |
+
+| RULE-MC-016 | 永续进化: 禁止声明"任务完成", 只能声明"本轮达成 + 下一轮目标"; 每轮结束后强制 META-THINK 元思考 (T.H.I.N.K. 五步), 未完成元思考不得开启下一任务 | meta_bootstrap META-THINK 2026-08-13 |

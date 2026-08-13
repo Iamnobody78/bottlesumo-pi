@@ -56,16 +56,11 @@ _archive/
 dashboard/db/
 docs/vision_frames/
 
-# 本地探针/注册脚本 (非产品)
-governance/meta_harness/probe_*.ps1
-governance/meta_harness/probe_*.sh
-governance/meta_harness/p2_inventory.ps1
-governance/meta_harness/recyclebin_check.ps1
-governance/meta_harness/register_*.py
-governance/meta_harness/relaunch_probe.sh
-governance/meta_harness/s15_live.err
-governance/meta_harness/steam_*.ps1
-governance/meta_harness/zfactory_clean.ps1
+# 目录整理 (RULE-MC-015): 调试脚本/日志/测试工件为 scratch 不入库
+# 已跟踪的 product 脚本不受 .gitignore 影响 (git 不 untrack 已跟踪文件)
+governance/meta_harness/logs/
+governance/meta_harness/scripts/
+governance/meta_harness/test_artifacts/
 governance/meta_language/*.bak_*
 governance/research/*probe*.py
 governance/research/compile_r1_input.py
