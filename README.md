@@ -45,7 +45,7 @@
 
 ## Governance Center Dashboard（S67-S69 产品化 + S70 RBAC）
 
-治理引擎（[agent-governance-v2](https://github.com/Iamnobody78/agent-governance-v2)）的产品化门面：
+治理引擎（`agent-governance-v2/`，已仓内 vendor，运行时 + 22 单元测试 + 3 协议）的产品化门面：
 **AI 代理治理层——不是构建框架，而是安全护栏。**
 
 ```mermaid
@@ -118,6 +118,7 @@ python -m pytest tests/ -m smoke -q
 ├── dashboard/             # ⭐ Governance Center Dashboard (FastAPI + React)
 │   ├── backend/           #   API + SQLAlchemy + RBAC/JWT + GovernanceEngine 门面
 │   └── frontend/          #   Vite + React 六视图 + 登录 + 策略编辑器
+├── agent-governance-v2/   # ⭐ 治理运行时 (仓内 vendor: policy/protocol_gateway/verification/vce/mce)
 ├── governance/            # 治理知识库 / meta_prompts / engineering_rules / 报告
 ├── docs/                  # 架构 / 审计 / 产品化 / Sprint 报告
 ├── tests/                 # 主仓库测试 (smoke 冒烟)
