@@ -113,3 +113,11 @@ governance/meta_harness/self_reports/
 
 # 测试覆盖率产物
 dashboard/backend/.coverage
+
+# PERMANENT-ANCHOR 运行时产物 (锚点内容+manifest 提交; 日志/报告/备份/状态为运行时)
+governance/anchors/backup/
+governance/anchors/checkpoint_log.jsonl
+governance/anchors/recovery_log.jsonl
+governance/anchors/blocked_attempts.jsonl
+governance/anchors/anchor_state.json
+governance/anchors/anchor_report.md

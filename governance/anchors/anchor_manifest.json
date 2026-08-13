@@ -1,0 +1,17 @@
+{
+  "ANCHORS.md": {
+    "sha256": "68603ccdfb164ec5b414b20402b2da11340793f38290e369421897366b5abcb3",
+    "size": 2042,
+    "assembled_at": "2026-08-13T16:19:38.238255"
+  },
+  "BOUNDARY.md": {
+    "sha256": "46f6474fb37c3d8371eb5405b0af6941c4f09615ce89114aff44ea426e72e16f",
+    "size": 2022,
+    "assembled_at": "2026-08-13T16:19:38.238255"
+  },
+  "REDLINES.md": {
+    "sha256": "a29f57c5ee0617bb3184a73d88ed03269c4102589bf49b17d228e4031287426b",
+    "size": 1532,
+    "assembled_at": "2026-08-13T16:19:38.238255"
+  }
+}
