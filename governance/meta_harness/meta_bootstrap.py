@@ -18,6 +18,8 @@ import os
 import sys
 import time
 
+import bootstrap_loop
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 TS = time.strftime("%Y%m%d_%H%M%S")
 DATE = time.strftime("%Y-%m-%d")
@@ -51,7 +53,7 @@ def assess(tag=None):
     # ---- 工件度量 ----
     dec = []
     try:
-        with open(_p("meta_decisions.jsonl")) as f:
+        with open(_p("meta_decisions.jsonl"), encoding="utf-8") as f:
             for line in f:
                 try:
                     dec.append(json.loads(line))
@@ -68,7 +70,7 @@ def assess(tag=None):
 
     # 规则条目数 (RULE-MC-)
     try:
-        with open(_p("meta_engineering_rules.md")) as f:
+        with open(_p("meta_engineering_rules.md"), encoding="utf-8") as f:
             txt = f.read()
         n_rule_entries = txt.count("RULE-MC-")
     except OSError:
@@ -203,7 +205,7 @@ def assess(tag=None):
         "",
     ]
     out = _p("meta_capability_scorecard.md")
-    with open(out, "w") as f:
+    with open(out, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
     _log(f"scorecard -> {out} (MCI={avg:.2f})")
     return 0
@@ -214,7 +216,7 @@ def _append_rule(rule_text):
     """追加 RULE-MC 到 meta_engineering_rules.md (追加制, 位于表格末尾)."""
     path = _p("meta_engineering_rules.md")
     try:
-        with open(path, "a") as f:
+        with open(path, "a", encoding="utf-8") as f:
             f.write(f"\n| {rule_text} | meta_bootstrap {DATE} |\n")
         return True
     except OSError:
@@ -223,7 +225,7 @@ def _append_rule(rule_text):
 
 def _append_decision(rec):
     try:
-        with open(_p("meta_decisions.jsonl"), "a") as f:
+        with open(_p("meta_decisions.jsonl"), "a", encoding="utf-8") as f:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
         return True
     except OSError:
@@ -231,19 +233,28 @@ def _append_decision(rec):
 
 
 def evolve(iterations=1, tag=None):
-    """Phases S->D. 首轮目标: 元认知-偏差检测形式化 (S56 实证 + 最低分维度之一)."""
+    """Phases S->D. 数据驱动: select_target(scan_scorecard()) 定位最低分维度, allocate_rule_id 冲突安全分配."""
     _log(f"Phase S: Select (tag={tag}, iterations={iterations})")
 
-    # ---- Phase S: 选择改进目标 (基于 scorecard 或框架自评) ----
-    target = "元认知-偏差检测形式化: 将 S56 fix=2 退化段检测/跳变排除模式固化为可复用元能力规则"
-    target_dim = "元认知 (Meta-Cognition)"
-    _log(f"目标: {target}")
-    with open(_p("meta_improvement_target.md"), "w") as f:
+    # ---- Phase S: 选择改进目标 (数据驱动, 非硬编码) ----
+    sc = bootstrap_loop.scan_scorecard()
+    sel = bootstrap_loop.select_target(sc)
+    if sel:
+        target_dim = sel["dim"]
+        target_score = sel["score"]
+        target = "; ".join(sel["gaps"]) if sel["gaps"] else "无明确差距(需进一步探查)"
+    else:
+        # scorecard 未解析到分数时的保守回退 (仍基于 S56 实证素材)
+        target_dim = "元认知"
+        target_score = 2.5
+        target = "元认知-偏差检测形式化: 将 S56 fix=2 退化段检测固化为可复用元能力规则"
+    _log(f"目标: [{target_dim} {target_score:.1f}/5] {target}")
+    with open(_p("meta_improvement_target.md"), "w", encoding="utf-8") as f:
         f.write(f"""# 元能力改进目标 (META-IMPROVEMENT TARGET)
 
 > 生成: {DATE} ({TS}) | 标签: {tag or 'META_EVOLVE'}
 
-- **维度**: {target_dim} (scorecard 最低分维度之一, L2)
+- **维度**: {target_dim} ({target_score:.1f}/5, scorecard 最低分维度)
 - **目标**: {target}
 - **依据**:
   1. S56 (02-23) 根因链: RTK fix=2 退化段 154s 被 fix>=3-only 门控当作全量失锁 ->
@@ -254,20 +265,35 @@ def evolve(iterations=1, tag=None):
 - **成功判据**: (a) 规则固化可复用; (b) 27-session 回测 02-23 <400m 且无退化
 """)
 
-    # ---- Phase C: Change ----
-    rule_id = "RULE-MC-011"   # NOTE: RULE-MC-010 已被 cell_learner 占用, 避免 ID 冲突
+    # ---- Phase C: Change (冲突安全 ID 分配, 非硬编码 RULE-MC-011) ----
+    scan = bootstrap_loop.scan_rules()
+    if scan["collisions"]:
+        _log(f"警告: 检测到 RULE-MC ID 冲突 {scan['collisions']}, 请先修复")
+    rule_id = bootstrap_loop.allocate_rule_id(scan)
     rule_text = (f"{rule_id} | 传感器退化段不是失锁: 码/浮点解 (fix=2) 携带冻结/陈旧坐标, "
                  f"按退化段处理 (软位置更新 + 协方差增长), 而非纯 DR 保持; "
                  f"检测特征 = 连续相同坐标 + fix 降级 (NCLT 实证: 02-23 154s -> +10km)")
-    ok = _append_rule(rule_text)
-    _log(f"Phase C: Change -> RULE-MC-010 固化 {'OK' if ok else 'FAIL'}")
-    with open(_p("meta_change_implementation.md"), "w") as f:
+    # 去重守卫: S56 fix=2 规则已作为 RULE-MC-013 落地, 避免重复固化
+    try:
+        with open(_p("meta_engineering_rules.md"), encoding="utf-8", errors="replace") as _f:
+            _rules_txt = _f.read()
+    except OSError:
+        _rules_txt = ""
+    if "传感器退化段不是失锁" in _rules_txt:
+        _log("S56 fix=2 规则已落地 (RULE-MC-013), 跳过重复固化; 下一轮应转向元认知-不确定性来源识别")
+        ok = True
+        rule_landed = False
+    else:
+        ok = _append_rule(rule_text)
+        rule_landed = ok
+    _log(f"Phase C: Change -> {rule_id} 固化 {'OK (已存在,跳过)' if ok and not rule_landed else ('OK' if ok else 'FAIL')}")
+    with open(_p("meta_change_implementation.md"), "w", encoding="utf-8") as f:
         f.write(f"""# 元能力改进实施 (META-CHANGE IMPLEMENTATION)
 
 > 生成: {DATE} ({TS})
 
 ## 改动内容
-1. **规则固化**: RULE-MC-010 ({rule_text})
+1. **规则固化**: {rule_text}
 2. **可复用能力载体**: nclt_fusion_ekf.py S56 参数块 (F2_USE/F2_SIGMA/F2_STALE_RATE/
    F2_MIN_GAP/F2_VCLAMP) + kind=4 soft 更新分支 — 偏差检测/补偿模式已在 NCLT 域落地,
    规则抽取后可供其他传感器融合域迁移 (知识迁移形式化第一步)。
@@ -278,7 +304,7 @@ def evolve(iterations=1, tag=None):
 
     # ---- Phase E: Evaluate ----
     # 评估 = 27-session 回测 (S56 T3, 运行中); 此处记录已确认的 02-23 单点证据
-    with open(_p("meta_change_evaluation.md"), "w") as f:
+    with open(_p("meta_change_evaluation.md"), "w", encoding="utf-8") as f:
         f.write(f"""# 元能力改进验证 (META-CHANGE EVALUATION)
 
 > 生成: {DATE} ({TS})
@@ -298,7 +324,7 @@ def evolve(iterations=1, tag=None):
 """)
 
     # ---- Phase N: Normalize ----
-    with open(_p("meta_baseline_update.md"), "w") as f:
+    with open(_p("meta_baseline_update.md"), "w", encoding="utf-8") as f:
         f.write(f"""# 元能力基线更新 (META-BASELINE UPDATE)
 
 > 生成: {DATE} ({TS})
@@ -309,14 +335,14 @@ def evolve(iterations=1, tag=None):
 """)
 
     # ---- Phase D: Document ----
-    with open(_p("meta_evolution_record.md"), "w") as f:
+    with open(_p("meta_evolution_record.md"), "w", encoding="utf-8") as f:
         f.write(f"""# 元能力进化记录 (META-EVOLUTION RECORD)
 
 > 生成: {DATE} ({TS}) | 标签: {tag or 'META_EVOLVE'}
 
 ## 本轮进化 (iteration 1/{iterations})
 - 维度: {target_dim}
-- 改动: RULE-MC-010 固化 + S56 偏差检测模式文档化
+- 改动: {rule_id} 固化 + S56 偏差检测模式文档化
 - 效果: 元认知 偏差检测形式化 ⚡ -> 部分 (待 T3 验证后 -> ✅)
 - 决策记录: meta_decisions.jsonl (type=meta_bootstrap)
 
@@ -327,11 +353,13 @@ def evolve(iterations=1, tag=None):
 """)
     _append_decision({
         "ts": TS, "type": "meta_bootstrap", "tag": tag or "META_EVOLVE",
-        "target_dim": target_dim, "rule_added": rule_id,
+        "target_dim": target_dim,
+        "rule_added": rule_id if rule_landed else None,
+        "rule_dedup": not rule_landed,
         "evidence": "S56: 02-23 pos RMSE 443.85->36.96m (-91.7%), velocity 148->0.41 m/s",
-        "pending": "S56 T3 27-session backtest gate",
+        "pending": "S56 T3 27-session backtest gate" if rule_landed else "S56 已落地(RULE-MC-013), 下一差距=元认知-不确定性来源识别",
     })
-    _log(f"Phase N+D: baseline + evolution record 已写入; decision 已追加 (pending T3 gate)")
+    _log(f"Phase N+D: baseline + evolution record 已写入; decision 已追加 ({'pending T3 gate' if rule_landed else 'dedup: 已落地, 待转向下一差距'})")
     return 0
 
 
