@@ -21,10 +21,10 @@ from datetime import datetime
 
 import yaml  # noqa: E402
 
-# ── agent-governance-v2 引入 ─────────────────────────────────────────
-_DEFAULT_V2 = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.abspath(__file__))))), "agent-governance-v2")
+# ── agent-governance-v2 引入 (已 vendor 进仓库内, 2026-08-13) ─────────
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))))
+_DEFAULT_V2 = os.path.join(_REPO_ROOT, "agent-governance-v2")
 _AGENTS_V2 = os.getenv("GOV_AGENTS_V2_PATH", _DEFAULT_V2)
 if _AGENTS_V2 not in sys.path:
     sys.path.insert(0, _AGENTS_V2)
@@ -147,7 +147,7 @@ class GovernanceEngine:
     def validate_protocol(self, name: str, yaml_text: str) -> dict:
         """预编译验证 (不写入真实 config):
           1. YAML 语法检查
-          2. schema_version 契约检查 (11-col-v1)
+          2. schema_version 契约检查 (11-col-v1 / 13-col-v2)
           3. 临时目录预编译 (load_protocols 做全部 fail-closed 字段校验)
         """
         self._safe_protocol_name(name)
@@ -159,10 +159,10 @@ class GovernanceEngine:
         if not isinstance(data, dict):
             return {"valid": False, "protocol": name,
                     "errors": ["YAML 顶层必须是对象 (protocol 声明)"]}
-        # 2) schema 契约
-        if data.get("schema_version") != "11-col-v1":
+        # 2) schema 契约 (接受 11-col-v1 / 13-col-v2)
+        if data.get("schema_version") not in ("11-col-v1", "13-col-v2"):
             return {"valid": False, "protocol": name,
-                    "errors": [f"schema_version 必须是 '11-col-v1' (fail-closed) — "
+                    "errors": [f"schema_version 必须是 '11-col-v1' 或 '13-col-v2' (fail-closed) — "
                                f"got {data.get('schema_version')!r}"]}
         # 3) 预编译 (临时目录, 零副作用) — 编译器校验 12 必填字段/level 合法性
         with tempfile.TemporaryDirectory() as td:

@@ -1,0 +1,113 @@
+schema_version: generated
+rules:
+- name: protocol-entropy_denoise-ethics
+  action: DENY
+  priority: 5
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.entropy_denoise.violation
+  json_pattern: .+
+  origin: notion:N1 (人機協作協議)
+  level: L3
+- name: protocol-entropy_denoise-enforce
+  action: ESCALATE
+  priority: 15
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.entropy_denoise
+  json_pattern: (?=.*"triggered":true)(?!.*"satisfied":true)
+  origin: notion:N1 (人機協作協議)
+  level: L3
+- name: protocol-entropy_denoise-ok
+  action: ALLOW_WITH_WARNING
+  priority: 25
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.entropy_denoise
+  json_pattern: (?=.*"satisfied":true)
+  origin: notion:N1 (人機協作協議)
+  level: L3
+- name: protocol-feynman_test-ethics
+  action: DENY
+  priority: 5
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.feynman_test.violation
+  json_pattern: .+
+  origin: notion:N1 (人機協作協議)
+  level: L2
+- name: protocol-feynman_test-enforce
+  action: ESCALATE
+  priority: 20
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.feynman_test
+  json_pattern: (?=.*"triggered":true)(?!.*"satisfied":true)
+  origin: notion:N1 (人機協作協議)
+  level: L2
+- name: protocol-feynman_test-ok
+  action: ALLOW_WITH_WARNING
+  priority: 30
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.feynman_test
+  json_pattern: (?=.*"satisfied":true)
+  origin: notion:N1 (人機協作協議)
+  level: L2
+- name: protocol-honesty_permanent-ethics
+  action: DENY
+  priority: 5
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.honesty_permanent.violation
+  json_pattern: .+
+  origin: user-proposal:2026-08-12; 归档 governance/meta_prompts/HONESTY-PERMANENT_v1.md;
+    v1.1 升级 2026-08-13
+  level: L0-L5
+- name: protocol-honesty_permanent-enforce
+  action: ESCALATE
+  priority: 20
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.honesty_permanent
+  json_pattern: (?=.*"triggered":true)(?!.*"satisfied":true)
+  origin: user-proposal:2026-08-12; 归档 governance/meta_prompts/HONESTY-PERMANENT_v1.md;
+    v1.1 升级 2026-08-13
+  level: L0-L5
+- name: protocol-honesty_permanent-ok
+  action: ALLOW_WITH_WARNING
+  priority: 30
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.honesty_permanent
+  json_pattern: (?=.*"satisfied":true)
+  origin: user-proposal:2026-08-12; 归档 governance/meta_prompts/HONESTY-PERMANENT_v1.md;
+    v1.1 升级 2026-08-13
+  level: L0-L5
+- name: protocol-logic_chain_check-ethics
+  action: DENY
+  priority: 5
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.logic_chain_check.violation
+  json_pattern: .+
+  origin: notion:N1 (人機協作協議)
+  level: L2
+- name: protocol-logic_chain_check-enforce
+  action: ESCALATE
+  priority: 20
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.logic_chain_check
+  json_pattern: (?=.*"triggered":true)(?!.*"satisfied":true)
+  origin: notion:N1 (人機協作協議)
+  level: L2
+- name: protocol-logic_chain_check-ok
+  action: ALLOW_WITH_WARNING
+  priority: 30
+  path_pattern: '*'
+  method: '*'
+  json_path: $.governance.protocols.logic_chain_check
+  json_pattern: (?=.*"satisfied":true)
+  origin: notion:N1 (人機協作協議)
+  level: L2

@@ -1,0 +1,13 @@
+{
+  "Verification_Channel": {
+    "enabled": true,
+    "type": "pluggable-validator",
+    "validator": "baseline",
+    "mitigates": [
+      "declaration_only"
+    ]
+  },
+  "Polarization_Index": 0.542,
+  "conflict_count": 0,
+  "blindspot_count": 0
+}

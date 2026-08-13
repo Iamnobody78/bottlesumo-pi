@@ -24,7 +24,7 @@ def client():
     os.makedirs(proto_dir)
     real_proto_dir = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),  # tests
-        "..", "..", "..", "..",  # → 会话仓库根 (aionrs-temp-...)
+        "..", "..", "..",  # → 仓库根 (bottlesumo-pi-clone, agent-governance-v2 已 vendor)
         "agent-governance-v2", "config", "protocols")
     import shutil
     for f in os.listdir(real_proto_dir):
