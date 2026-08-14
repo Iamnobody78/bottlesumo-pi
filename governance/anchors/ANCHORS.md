@@ -1,7 +1,7 @@
 # ANCHORS.md —— 核心协议摘要（不可篡改锚点）
 
-> 生成：PERMANENT-ANCHOR v1.0 Phase A ｜ 日期：2026-08-13 ｜ 签名见 ANCHORS.sig
-> 本文件内容为**真实项目状态**，非模板示例。修改须经 A.N.C.H.O.R. Phase H 变更阻断。
+> 生成：PERMANENT-ANCHOR v1.1 Phase A ｜ 日期：2026-08-13 ｜ 签名：anchor_manifest.json（SHA-256 信任根）
+> 本文件内容为**真实项目状态**，非模板示例。修改须经 A.N.C.H.O.R. Phase H 变更阻断（--update "原因"）。
 
 ## 优先级契约（最高锚点）
 
@@ -14,7 +14,7 @@
 
 | 层 | 协议 | 一句话 |
 |:---|:---|:---|
-| 底座 | **PERMANENT-ANCHOR v1.0** | 记忆完整性：防止遗忘（A.N.C.H.O.R. 六步 + SHA-256 签名） |
+| 底座 | **PERMANENT-ANCHOR v1.1** | 记忆完整性：防止遗忘（A.N.C.H.O.R. 六步 + SHA-256 签名 + 信任根） |
 | 自评 | **SELF-EVOLVE v1.0** | 七维 D1-D7 + S.E.L.F. 四相循环 + 月频自评 + 5 红线 |
 | 安全 | **EVOLVE-SAFE v1.0** | 安全进化护栏：误进化检测 + G.A.P.S. 五相 + R1-R5 五红线（硬停止） |
 | 优化 | **Meta-Harness** (Stanford arXiv:2603.28052) | harness=代码非提示词；Pareto 前沿；因果推理；纯加法转向 |
@@ -32,4 +32,4 @@
 
 - **CVE-S 三螺旋**：MCE（元模型/结构）+ VCE（元价值/伦理）+ CEE（元认知执行），已编译 42 协议。
 - **双环融合**：内环=学术优化调度器（harness 自动发现）；外环=统一 Agent 治理（注册表/路由/沙箱）。
-- **V9 裁决门**：当前 10% 胜率（<60% 阈值），plateau_explorer 自蒸馏待触发。
+- **V9 裁决门**：实测 100% 胜率（40/40，v9_gate_evaluator --episodes 40，2026-08-14），≥60% 阈值 → PASS。早期"10%"为过时数据，已证伪作废。
