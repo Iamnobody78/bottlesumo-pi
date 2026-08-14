@@ -57,12 +57,13 @@ DSH_PROFILE = os.environ.get("DSH_PROFILE", "headless")
 DSH_TIMEOUT = int(os.environ.get("DSH_TIMEOUT", "600"))  # headless 任务超时(秒)
 
 
-def _run_dsh(task: str) -> str:
-    """调用 DSH headless 模式执行任务, 返回最终消息。"""
+def _run_dsh(task: str, cwd=None) -> str:
+    """调用 DSH headless 模式执行任务, 返回最终消息。cwd 用于固定工作区 (车同轨)。"""
     cmd = [DSH_CMD, "--profile", DSH_PROFILE, task]
     try:
         r = subprocess.run(cmd, capture_output=True, text=True,
-                           timeout=DSH_TIMEOUT, encoding="utf-8", errors="replace")
+                           timeout=DSH_TIMEOUT, encoding="utf-8", errors="replace",
+                           cwd=cwd)
     except subprocess.TimeoutExpired:
         return "[DSH-ACP] 任务超时 (%ds) — 可增大 DSH_TIMEOUT" % DSH_TIMEOUT
     except FileNotFoundError:
@@ -120,14 +121,22 @@ class _DshAcpAgent(ABC):
     def logout(self, params: dict) -> dict:
         return {}
 
+    def _session_defaults(self) -> dict:
+        # 车同轨: 会话 cwd 优先取 AionUi 传入, 否则取 AIONUI_WORKSPACE (中央工作区), 再否则进程 cwd
+        return {"mode": "default", "config": {},
+                "cwd": os.environ.get("AIONUI_WORKSPACE") or os.getcwd()}
+
     def session_new(self, params: dict) -> dict:
         sid = self._uuid()
-        self._sessions[sid] = {"mode": "default", "config": {}}
+        s = self._session_defaults()
+        if params.get("cwd"):
+            s["cwd"] = params["cwd"]
+        self._sessions[sid] = s
         return {"sessionId": sid}
 
     def session_load(self, params: dict) -> dict:
         sid = params.get("sessionId") or self._uuid()
-        self._sessions.setdefault(sid, {"mode": "default", "config": {}})
+        self._sessions.setdefault(sid, self._session_defaults())
         return {"sessionId": sid}
 
     def session_set_mode(self, params: dict) -> dict:
@@ -232,7 +241,8 @@ class _DshAcpAgent(ABC):
     def handle_prompt(self, session_id: str, prompt_text: str, params: dict) -> str:
         if not prompt_text.strip():
             return "(空消息)"
-        return _run_dsh(prompt_text)
+        s = self._sessions.get(session_id) or self._session_defaults()
+        return _run_dsh(prompt_text, cwd=s.get("cwd"))
 
 
 def _dispatch(agent: _DshAcpAgent, method: str, params: dict) -> Any:
