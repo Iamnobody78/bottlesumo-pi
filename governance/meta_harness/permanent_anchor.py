@@ -81,7 +81,8 @@ def _load_manifest():
 
 
 def _save_manifest(manifest):
-    json.dump(manifest, open(MANIFEST, "w", encoding="utf-8"),
+    # newline="\n" 强制 LF: Windows 文本模式会把 \n→\r\n, 致本地/仓库字节不一致
+    json.dump(manifest, open(MANIFEST, "w", encoding="utf-8", newline="\n"),
               ensure_ascii=False, indent=2)
 
 
@@ -95,12 +96,12 @@ def _load_state():
 
 
 def _save_state(state):
-    json.dump(state, open(STATE_FILE, "w", encoding="utf-8"),
+    json.dump(state, open(STATE_FILE, "w", encoding="utf-8", newline="\n"),
               ensure_ascii=False, indent=2)
 
 
 def _append_log(path, entry):
-    with open(path, "a", encoding="utf-8") as f:
+    with open(path, "a", encoding="utf-8", newline="\n") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 
@@ -322,7 +323,7 @@ def run():
 
     report = render_report(round_n, asm, ver, cp, hal, rec)
     report_path = os.path.join(ANCHOR_DIR, "anchor_report.md")
-    open(report_path, "w", encoding="utf-8").write(report)
+    open(report_path, "w", encoding="utf-8", newline="\n").write(report)
 
     state = _load_state()
     state["round"] = round_n
