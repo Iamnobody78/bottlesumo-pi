@@ -70,8 +70,10 @@ def _run_dsh(task: str, cwd=None) -> str:
         return "[DSH-ACP] 错误: 找不到 dsh 命令。请先 npm install -g @deepseek-ai/dsh"
     out = (r.stdout or "").strip()
     err = (r.stderr or "").strip()
-    if r.returncode != 0:
-        return "[DSH-ACP] DSH 返回码 %d\n%s" % (r.returncode, (err or out)[:2000])
+    # 鲁棒: 某些环境(PYTHONPATH sitecustomize patch)下 returncode 可能为 None
+    rc = r.returncode if r.returncode is not None else 0
+    if rc != 0:
+        return "[DSH-ACP] DSH 返回码 %d\n%s" % (rc, (err or out)[:2000])
     return out if out else (err[:2000] if err else "(DSH 无输出)")
 
 
