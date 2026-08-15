@@ -1,3 +1,5 @@
+> ⚠️ **开发迁移公告**: 本仓库已并入 [\cognify-engine\](https://github.com/Iamnobody78/cognify-engine) (插件平台 PLUGINIFY v1.0)。所有新开发/迭代/CI 均迁移至该仓库, 本仓库仅保留历史与外部贡献入口。
+
 # BottleSumo 旗舰版 — 140GB 物理仿真 + AI 治理旗舰仓库
 
 > **这是 Iamnobody78 的开源旗舰仓库**——一台由 AI 治理的自主物理仿真机器人（BottleSumo 相扑擂台），
