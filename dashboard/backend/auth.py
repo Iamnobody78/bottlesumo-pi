@@ -28,11 +28,18 @@ from database import get_session_factory
 from models import User
 
 # ---- 配置 ----
-DEV_SECRET = "dev-only-secret-change-me-0123456789abcdef"  # 生产必须设置 GOV_AUTH_SECRET
+# SD-001 修复 (2026-08-19): 硬编码 JWT 密钥风险 —
+#   开发密钥仅允许在非生产环境 (GOV_ENV != production) 使用; 生产未设 GOV_AUTH_SECRET 则拒绝启动 (fail-closed)
+DEV_SECRET = "dev-only-secret-change-me-0123456789abcdef"  # 开发默认值, 严禁用于生产
+ENV = os.getenv("GOV_ENV", "development")
 SECRET = os.getenv("GOV_AUTH_SECRET", DEV_SECRET)
 if SECRET == DEV_SECRET:
+    if ENV == "production":
+        raise RuntimeError(
+            "GOV_AUTH_SECRET 未设置且 GOV_ENV=production — 拒绝启动 (SD-001: 禁止生产使用开发密钥)"
+        )
     logging.getLogger("governance.auth").warning(
-        "GOV_AUTH_SECRET 未设置——使用开发默认值, 生产环境必须配置!"
+        "GOV_AUTH_SECRET 未设置——使用开发默认值 (GOV_ENV=%s), 生产环境必须配置!", ENV
     )
 TOKEN_TTL_HOURS = int(os.getenv("GOV_AUTH_TTL_HOURS", "12"))
 # S2: 刷新令牌时效 (默认 7 天)
