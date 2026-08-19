@@ -1,6 +1,8 @@
 # 架构
 
-见仓库根 [ARCHITECTURE.md](https://github.com/Iamnobody78/bottlesumo-pi/blob/main/ARCHITECTURE.md)。
+- 顶层视图：[ARCHITECTURE.md](https://github.com/Iamnobody78/bottlesumo-pi/blob/main/ARCHITECTURE.md)（快照 v11.11 + 治理闭环 S63→S69）
+- 详细架构总纲：[architecture_overview.md](https://github.com/Iamnobody78/bottlesumo-pi/blob/main/architecture_overview.md)（9 层物理架构权威描述）
+- 治理引擎：[agent-governance-v2 ARCHITECTURE.md](https://github.com/Iamnobody78/agent-governance-v2/blob/main/ARCHITECTURE.md)
 
 ## 快速摘要
 
