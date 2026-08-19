@@ -38,7 +38,7 @@ jobs:
         working-directory: bottlesumo-pi/dashboard/backend
         run: |
           pip install -r requirements.txt
-          pip install -r ../../agent-governance-v2/requirements.txt
+          pip install -r "${{ github.workspace }}/agent-governance-v2/requirements.txt"
       - name: Start backend
         working-directory: bottlesumo-pi/dashboard/backend
         env:
