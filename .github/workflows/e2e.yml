@@ -14,31 +14,41 @@ jobs:
         working-directory: dashboard/frontend
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: bottlesumo-pi
+      - uses: actions/checkout@v4
+        with:
+          repository: Iamnobody78/agent-governance-v2
+          path: agent-governance-v2
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: npm
-          cache-dependency-path: dashboard/frontend/package-lock.json
+          cache-dependency-path: bottlesumo-pi/dashboard/frontend/package-lock.json
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Install frontend deps
+        working-directory: bottlesumo-pi/dashboard/frontend
         run: npm ci
       - name: Install Playwright
+        working-directory: bottlesumo-pi/dashboard/frontend
         run: npx playwright install --with-deps chromium
       - name: Install backend deps
-        working-directory: dashboard/backend
+        working-directory: bottlesumo-pi/dashboard/backend
         run: |
           pip install -r requirements.txt
+          pip install -r ../../agent-governance-v2/requirements.txt
       - name: Start backend
-        working-directory: dashboard/backend
+        working-directory: bottlesumo-pi/dashboard/backend
         env:
-          GOV_AGENTS_V2_PATH: ${{ github.workspace }}
+          GOV_AGENTS_V2_PATH: ${{ github.workspace }}/bottlesumo-pi
+          PYTHONPATH: ${{ github.workspace }}/agent-governance-v2
         run: |
           python -c "from main import app; print('app OK')"
           nohup uvicorn main:app --port 8010 --host 127.0.0.1 > /tmp/backend.log 2>&1 &
       - name: Start frontend (vite preview)
-        working-directory: dashboard/frontend
+        working-directory: bottlesumo-pi/dashboard/frontend
         run: |
           npm run build
           nohup npm run preview -- --port 5173 > /tmp/frontend.log 2>&1 &
@@ -51,6 +61,7 @@ jobs:
             curl -sf http://127.0.0.1:5173 && break || sleep 2
           done
       - name: Run E2E smoke
+        working-directory: bottlesumo-pi/dashboard/frontend
         run: |
           npx playwright test --reporter=line || {
             echo "--- backend log ---"; tail -50 /tmp/backend.log
