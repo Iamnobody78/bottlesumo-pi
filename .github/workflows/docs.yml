@@ -44,7 +44,19 @@ jobs:
               print(f"C5 OK: {name} 阶段一致 ({len(s_doc)} 个 S-tag)")
           EOF
       - name: Build docs
-        run: mkdocs build --strict
+        # --strict 保留真实 warning 敏感性; Material 团队公告(2.0迁移提示) 为已知非致命警告,
+        # 通过 grep 白名单过滤其退出码 (不用 `|| true` 以免吞掉真实构建失败)
+        run: |
+          set -o pipefail
+          mkdocs build --strict 2>&1 | tee /tmp/mkdocs.log
+          if grep -q "Warning from the Material for MkDocs team" /tmp/mkdocs.log; then
+            # 仅当除 Material 公告外无其他 WARNING/ERROR 时视为通过
+            if ! grep -E "^(WARNING|ERROR)" /tmp/mkdocs.log | grep -v "Warning from the Material for MkDocs team" | grep -q .; then
+              echo "✅ docs built (only Material team announcement warning)"
+              exit 0
+            fi
+          fi
+          exit ${PIPESTATUS[0]}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

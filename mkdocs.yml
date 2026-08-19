@@ -73,6 +73,17 @@ nav:
     - ROS 2 集成 ROUND 0 报告: productization/ros_int_round0_report.md
   - Sprint 队列:
     - 队列 5 清单: sprints/queue5_manifest.md
+  - 部署预备:
+    - BS-PREP ROUND 1: deployment_prep/BS_PREP_ROUND_1_report.md
+    - 清理报告: deployment_prep/cleanup_report.md
+    - 磁盘扫描: deployment_prep/disk_scan_report.md
+    - LiDAR 设计: deployment_prep/lidar_design_spec.md
+    - 迁移差距: deployment_prep/migration_gap_analysis.md
+    - 预部署清单: deployment_prep/pre_deployment_checklist.md
+  - 审计与债务:
+    - T3/D1/C5 修复证据: audit_fixes_t3d1c5.md
+    - 技术债务清单: tech_debt.md
+    - 任务A 重定义: TASK_A_REDEFINED.md
   - 开发: contributing.md
   - 变更: changelog.md
 
