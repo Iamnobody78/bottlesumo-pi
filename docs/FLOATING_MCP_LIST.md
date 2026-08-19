@@ -1,32 +1,41 @@
-# 游离 MCP 清单（Hermes enabled 但 registry 未对齐）
+# 游离 MCP 清单（Hermes enabled vs registry 对账）— 最终版
 
-**日期**: 2026-08-19
-**对账依据**: reconcile.py 实测（Hermes 20 enabled vs registry v2.2.0）
+**日期**: 2026-08-19（最终）
+**对账依据**: reconcile.py + reconcile_table.py 实测
 
-## 结论：20 = 14 registry-ready + 6 无条目 + 1 状态脱节
+## 结论：20/20 全部对齐，0 游离
 
-### 6 个无 registry 条目（全为手工部署）
+| # | 服务器 | 来源 | 扫描 | registry | verified |
+|---|--------|------|------|----------|----------|
+| 1 | visionsearch | registry-ready | ok | verified | true |
+| 2 | llm-vision | registry-ready | ok | verified | true |
+| 3 | image-recognition | registry-ready | ok | verified | true |
+| 4 | three-ws-vision | registry-ready | ok | verified | true |
+| 5 | cad-mcp-server | registry-ready | ok | verified | true |
+| 6 | mcp-cad-studio | registry-ready | ok | verified | true |
+| 7 | loki-cad-mcp | registry-ready | ok | verified | true |
+| 8 | playwright | registry-ready | ok | verified | true |
+| 9 | sequential-thinking | registry-ready | ok | verified | true |
+| 10 | memory | registry-ready | ok | verified | true |
+| 11 | github | registry-ready | ok | verified | true |
+| 12 | filesystem | registry-ready | ok | verified | true |
+| 13 | cognify | registry-ready | ok | verified | true |
+| 14 | chrome-devtools | registry-ready | ok | verified | true |
+| 15 | aionui-browser | manual | **fail** | **falsified** | false |
+| 16 | platform-filesystem | manual | ok | verified | true |
+| 17 | platform-fetch | manual | ok | verified | true |
+| 18 | platform-memory | manual | ok | verified | true |
+| 19 | team-coordinator | manual | ok | verified | true |
+| 20 | axiom-math | manual | ok | verified | true |
 
-| # | 名称 | 安装方式 | 来源时期 | 状态 |
-|---|------|---------|---------|------|
-| 1 | aionui-browser | node CLI | S57 平台化 | enabled |
-| 2 | platform-filesystem | Python 自研 | S57 平台化 | enabled |
-| 3 | platform-fetch | Python 自研 | S57 平台化 | enabled |
-| 4 | platform-memory | Python 自研 | S57 平台化 | enabled |
-| 5 | team-coordinator | Python 自研 | S57 团队协调 | enabled |
-| 6 | axiom-math | npm (Giac/WASM CAS) | S69 数学域 | enabled |
+## 处置记录
 
-### 1 个状态脱节
+1. **6 个手工部署（S57-S69）**：platform-filesystem/fetch/memory/team-coordinator/aionui-browser/axiom-math
+   - 5 个扫描通过 → 补 registry 条目并 verified
+   - aionui-browser 连接失败 → falsified（reason: Connection closed 8891ms, 挂 DEBT 轨道修复）
+2. **axiom-math**：registry-only → verified（状态脱节已修正）
+3. **佐证**：失败项恰好落在手工安装批 → 手工部署可信度低于 registry 流程部署，写入验收文档
 
-| # | 名称 | registry 状态 | 实际状态 | 需修正 |
-|---|------|-------------|---------|--------|
-| 7 | axiom-math | registry-only | Hermes enabled | registry → ready |
-
-### 修正动作
-- 6 个无条目 → 补 registry 条目（含 transport/command/来源标注）
-- axiom-math → status 改 ready
-- 修正后 20 = 20（registry 与 Hermes 完全对齐）
-
-### 扫描脚本的"来源"标注
-- registry-ready: 14 个（visionsearch/llm-vision/image-recognition/three-ws-vision/cad-mcp-server/mcp-cad-studio/loki-cad-mcp/playwright/sequential-thinking/memory/github/filesystem/cognify/chrome-devtools）
-- 手工部署: 6 个（aionui-browser/platform-filesystem/platform-fetch/platform-memory/team-coordinator/axiom-math）
+## 证据文件
+- `hermes_mcp_health.json`（20 服务器 connect/tools 实测 + state.db 副作用记录）
+- registry v2.2.0（274 条目，verified/last_verified/evidence_file 字段）
