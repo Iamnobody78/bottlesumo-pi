@@ -16,7 +16,7 @@ jobs:
     name: Core lightweight tests (py3.11)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -33,10 +33,10 @@ jobs:
     name: Dashboard backend (pytest)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           path: bottlesumo-pi
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           repository: Iamnobody78/agent-governance-v2
           path: agent-governance-v2
@@ -77,10 +77,10 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           path: bottlesumo-pi
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           repository: Iamnobody78/agent-governance-v2
           path: agent-governance-v2
@@ -108,7 +108,7 @@ jobs:
       run:
         working-directory: dashboard/frontend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
